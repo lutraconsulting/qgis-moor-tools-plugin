@@ -1,2 +1,2 @@
-Default|C:\Users\pete\Documents\Projects\DNPA\test.qgs|1
-Missing Project|C:\Users\pete\Documents\Projects\DNPA\test.qgs|0
+Default|C:\tmp\QGIS Projects\default.qgs|1
+Other|C:\tmp\QGIS Projects\other.qgs|0

@@ -14,9 +14,14 @@ rem Install for all users (required script to be run as Administrator)
 rem SET DEST=C:\Program Files (x86)\Quantum GIS Lisboa\apps\qgis\python\plugins\%NAME%
 
 mkdir %DEST%
-xcopy /e /y *.py %DEST%
-xcopy /e /y *.png %DEST%
-xcopy /e /y metadata.txt %DEST%
-xcopy /e /y *.ui %DEST%
+mkdir %DEST%\examples
+mkdir %DEST%\Templates\Logos
+xcopy /y *.py %DEST%
+xcopy /y *.png %DEST%
+xcopy /y metadata.txt %DEST%
+xcopy /y *.ui %DEST%
+xcopy /y examples\*.* %DEST%\examples
+xcopy /y Templates\*.* %DEST%\Templates
+xcopy /y Templates\Logos\*.* %DEST%\Templates\Logos
 
 PAUSE

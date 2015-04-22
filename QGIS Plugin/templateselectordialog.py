@@ -45,8 +45,8 @@ class TemplateSelectorDialog(QtGui.QDialog):
         self.plugin_dir = os.path.dirname(__file__)
         
         # Set accordingly to your environment
-        self.templateFileRoot = r'Q:\QGIS\Templates'
-        # self.templateFileRoot = os.path.join(self.plugin_dir, 'Templates')
+        self.templateFileRoot = os.path.join(self.plugin_dir, 'Templates')
+        # self.templateFileRoot = r'C:\tmp\QGIS\Templates'
         
         # Replacement map
         self.replaceMap = { 'username' : os.environ['username'] }

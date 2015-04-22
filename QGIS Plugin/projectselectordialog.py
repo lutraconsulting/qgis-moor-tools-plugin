@@ -44,9 +44,12 @@ class ProjectSelectorDialog(QtGui.QDialog):
         self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
         
         # Loads the projects data structure
-        # Replace the path below with the path to your config file
-        #configFilePath = os.path.join(self.plugin_dir, 'examples', 'project_selector_config.txt')
-        configFilePath = r'Q:\QGIS\plugins\project_selector_config\project_selector_config.txt'
+        # Each line in the file takes the form:
+        # Label|Path to .qgs file|Selected by default? (0 or 1)
+        # e.g. Default Project|Z:\Path\To\Projects\default.qgs|1
+        # Replace the path below with the path to your config file or edit examples\project_selector_config.txt
+        configFilePath = os.path.join(self.plugin_dir, 'examples', 'project_selector_config.txt')
+        # configFilePath = r'Q:\QGIS\plugins\project_selector_config\project_selector_config.txt'
         configFile = open(configFilePath, 'r')
         self.projects = collections.OrderedDict()
         for line in configFile:
