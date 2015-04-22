@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TemplateSelector</class>
+ <widget class="QDialog" name="TemplateSelector">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>323</width>
+    <height>262</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Open Template</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="titleLabel">
+     <property name="text">
+      <string>Title</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="titleLineEdit"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="sizeLabel">
+     <property name="text">
+      <string>Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QComboBox" name="sizeComboBox">
+     <item>
+      <property name="text">
+       <string>A4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A0</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="orientationLabel">
+     <property name="text">
+      <string>Orientation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QComboBox" name="orientationComboBox">
+     <item>
+      <property name="text">
+       <string>Portrait</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Landscape</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="scaleLabel">
+     <property name="text">
+      <string>Scale 1 : </string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="scaleLineEdit">
+     <property name="text">
+      <string>200</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QComboBox" name="scaleComboBox">
+     <item>
+      <property name="text">
+       <string>1 : 200</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 500</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 1,000</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 1,250</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 2,500</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 5,000</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 10,000</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 25,000</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 50,000</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1 : 100,000</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="suitableForLabel">
+     <property name="text">
+      <string>Suitable for</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QComboBox" name="suitableForComboBox">
+     <item>
+      <property name="text">
+       <string>Paper (High res, 300 dpi)</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Electronic (Low res, 96 dpi)</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="copyrightLabel">
+     <property name="text">
+      <string>Copyright</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="2">
+    <widget class="QComboBox" name="copyrightComboBox"/>
+   </item>
+   <item row="6" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>titleLineEdit</tabstop>
+  <tabstop>sizeComboBox</tabstop>
+  <tabstop>orientationComboBox</tabstop>
+  <tabstop>scaleLineEdit</tabstop>
+  <tabstop>scaleComboBox</tabstop>
+  <tabstop>suitableForComboBox</tabstop>
+  <tabstop>copyrightComboBox</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>TemplateSelector</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>295</x>
+     <y>241</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>261</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>TemplateSelector</receiver>
+   <slot>openTemplate()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>228</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>120</x>
+     <y>214</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>scaleComboBox</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>TemplateSelector</receiver>
+   <slot>updateScaleText()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>265</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>228</x>
+     <y>9</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>helpRequested()</signal>
+   <receiver>TemplateSelector</receiver>
+   <slot>loadHelpPage()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>234</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>39</x>
+     <y>49</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>openTemplate()</slot>
+  <slot>updateScaleText()</slot>
+  <slot>loadHelpPage()</slot>
+ </slots>
+</ui>
