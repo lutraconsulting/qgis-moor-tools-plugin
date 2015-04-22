@@ -18,6 +18,5 @@ xcopy /e /y *.py %DEST%
 xcopy /e /y *.png %DEST%
 xcopy /e /y metadata.txt %DEST%
 xcopy /e /y *.ui %DEST%
-xcopy /e /y help %DEST%
-xcopy /e /y examples %DEST%
-xcopy /e /y i18n %DEST%
+
+PAUSE
