@@ -1,39 +1,80 @@
-# qgis-moor-tools-plugin
-Tools for simplifying and automating common tasks for national parks and other protected areas.
+# Moor Tools (QGIS Plugin)
 
+Tools for simplifying and automating common tasks for national parks and other protected areas. Catchy name courtesy of Dartmoor National Park, UK.
 
-Status
-------
+## Status
 
-Although fully functional, this plugin has not yet been polished for release. As a result, some manual configuration is needed for the plugin to work as designed.
+Although fully functional, this plugin has not yet been polished for release to the official QGIS plugin repository.
 
 Please note this plugin has been developed for very specific use cases and as such may require further work to make it more generic to suit users' wider requirements. Please feel free to create GitHub *issues* for reporting any bugs, queries or feature requests.
 
+## Configuration
 
-Setup
------
+Moor Tools can be configured from within QGIS via Plugins Menu > Moor Tools > Configure Moor Tools.
 
-**Start-up Projects**
+![](Images/moor_tools_config.png) 
 
-A configuration file is used to define the list of projects to display to the user on start-up. The path to this file should be specified in the variable `configFilePath` (line 51 in projectselectordialog.py) and defaults to examples\project_selector_config.txt under the plugin's folder.
+### Projects Folder (Project Selector)
 
-Each line of the configuration file should take the form:
-        
-    Label|Path to .qgs file|Selected by default? (0 or 1)
+The _Projects Folder_ configuration option should point to a folder containing QGIS project files (.qgs files) which will be presented to the user on QGIS start-up. 
 
+![](Images/project_selector.png)
 
-Notice the pipe character (|) used to delimit fields, for example:
+Normally the first item in the _Project Selector_ dialog will be selected by default. To adjust this behaviour create a file called ``default.txt`` under the _Projects Folder_. In this file specify the name of the default project.  
 
-    Default Project|Z:\Path\To\Projects\default.qgs|1
+### Folder Containing Templates (Template Selector)
 
-Will set the default project to *Z:\Path\To\Projects\default.qgs* with the label *Default Project*. Only one row should end with a 1, all other rows should end in a zero.
+The _Template Selector_ simplifies the process of selecting and configuring QGIS print composer templates (.qpt files) and provides a dialog like this:
 
-**Template Configuration**
+![](Images/template_selector.png)
 
-The path to a folder containing templates should be specified in the variable `self.templateFileRoot`. This folder should contain a number of .qpt files (print composer templates) and a copyright configuration file called *copyright_selector_config.txt*.
+The _Folder Containing Templates_ configuration option specifies the path to a folder containing the .qpt files. The folder structure should look similar to the example below:
 
-Each line of *copyright_selector_config.txt* should look like:
+- top-level container folder
+	- Planning Application
+		- A4L.qpt
+		- A4P.qpt
+		- A3L.qpt
+		- images (folder)
+			- logo.gif
+		- Copyrights (folder)
+			- Ordnance Survey.txt
+			- Aerial 2010.txt
+			- default.txt
+	- Environmental Impact Assessment
+		- ... (similar content to previous example
 
-    Aerial 2006|© Copyright Cartographic Engineering 2006|0
+The names of the folders under the top-level container folder (e.g. _Planning Application_) are used to identify the type of print composer template (see image above).
 
-This is a pipe-delimited group of (1) Label, (2) copyright message to be displayed and (3) whether this is the default option (0/1).
+In the example above the _Planning Application_ template is available as A4 (Landscape and Portrait) and A3 (Landscape). All ISO A series sizes are supported.
+
+In this case the The optional _images_ folder contains any logos or other images referenced by the associated .qpt files. 
+
+The optional _Copyrights_ folder contains the copyright text(s) available when using the _Planning Application_ composer template. _default.txt_ can optionally be used to specify the default copyright text for the template. This is configured as described above for the _Project Selector_.
+
+### Customising the Help URL
+
+You may be using Moor Tools as part of a wider QGIS deployment. In this case you may wish to override the destination URL of the Help button with your own content. This can be achieved by altering the definition of ``helpUrl`` towards the bottom of _templateselectordialog.py_
+
+## Creating Templates
+
+_Template Selector_ supports automatic replacement of strings in addition to those already supported by QGIS. The following strings will automatically be replaced within composer templates:
+
+- [username] : the user's username (e.g. %USERNAME%)
+- [title] : The _Title_ specified by the user in the above dialog
+- [copyright] : The content of the selected copyright file   
+
+Templates with multiple composer maps are supported. Composer maps are identified by their _Item ID_ property wherever present. 
+
+## Troubleshooting
+
+### Images Loading as Red Crosses
+
+This can happen when references to files used in print composer templates have been saved using relative paths.
+
+This can be resolved by:
+
+1. QGIS > Project Properties > General tab > Save paths > absolute
+2. Re-saving the composer template
+
+Alternatively the .qpt file can be edited by hand to specify the absolute path to referenced files. 

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>323</width>
-    <height>262</height>
+    <width>297</width>
+    <height>218</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,139 +20,29 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="titleLabel">
-     <property name="text">
-      <string>Title</string>
+   <item row="7" column="0" colspan="5">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QLineEdit" name="titleLineEdit"/>
+   <item row="5" column="1" colspan="4">
+    <widget class="QComboBox" name="copyrightComboBox"/>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="sizeLabel">
-     <property name="text">
-      <string>Size</string>
+   <item row="3" column="0" colspan="5">
+    <widget class="QGroupBox" name="mapScalesGroupBox">
+     <property name="title">
+      <string>Composer Map Scale(s)</string>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QComboBox" name="sizeComboBox">
-     <item>
-      <property name="text">
-       <string>A4</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>A3</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>A2</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>A1</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>A0</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="orientationLabel">
-     <property name="text">
-      <string>Orientation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QComboBox" name="orientationComboBox">
-     <item>
-      <property name="text">
-       <string>Portrait</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Landscape</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="scaleLabel">
-     <property name="text">
-      <string>Scale 1 : </string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLineEdit" name="scaleLineEdit">
-     <property name="text">
-      <string>200</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2">
-    <widget class="QComboBox" name="scaleComboBox">
-     <item>
-      <property name="text">
-       <string>1 : 200</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 500</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 1,000</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 1,250</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 2,500</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 5,000</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 10,000</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 25,000</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 50,000</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1 : 100,000</string>
-      </property>
-     </item>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="scalesGridLayout"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="4" column="0">
@@ -162,7 +52,14 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
+   <item row="5" column="0">
+    <widget class="QLabel" name="copyrightLabel">
+     <property name="text">
+      <string>Copyright</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="4">
     <widget class="QComboBox" name="suitableForComboBox">
      <item>
       <property name="text">
@@ -176,25 +73,58 @@
      </item>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="copyrightLabel">
+   <item row="0" column="1" colspan="4">
+    <widget class="QComboBox" name="templateTypeComboBox"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="titleLabel">
      <property name="text">
-      <string>Copyright</string>
+      <string>Title</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QComboBox" name="copyrightComboBox"/>
+   <item row="1" column="1" colspan="4">
+    <widget class="QLineEdit" name="titleLineEdit"/>
    </item>
-   <item row="6" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
+   <item row="0" column="0">
+    <widget class="QLabel" name="templateTypeLabel">
+     <property name="text">
+      <string>Template Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="sizeLabel">
+     <property name="text">
+      <string>Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QComboBox" name="sizeComboBox"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLabel" name="orientationLabel">
+     <property name="text">
+      <string>Orientation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <widget class="QComboBox" name="orientationComboBox"/>
+   </item>
+   <item row="6" column="1">
+    <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-    </widget>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -202,8 +132,6 @@
   <tabstop>titleLineEdit</tabstop>
   <tabstop>sizeComboBox</tabstop>
   <tabstop>orientationComboBox</tabstop>
-  <tabstop>scaleLineEdit</tabstop>
-  <tabstop>scaleComboBox</tabstop>
   <tabstop>suitableForComboBox</tabstop>
   <tabstop>copyrightComboBox</tabstop>
   <tabstop>buttonBox</tabstop>
@@ -217,12 +145,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>295</x>
-     <y>241</y>
+     <x>245</x>
+     <y>184</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
-     <y>261</y>
+     <y>215</y>
     </hint>
    </hints>
   </connection>
@@ -234,27 +162,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>115</x>
-     <y>228</y>
+     <y>184</y>
     </hint>
     <hint type="destinationlabel">
      <x>120</x>
      <y>214</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>scaleComboBox</sender>
-   <signal>currentIndexChanged(QString)</signal>
-   <receiver>TemplateSelector</receiver>
-   <slot>updateScaleText()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>265</x>
-     <y>128</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>228</x>
-     <y>9</y>
     </hint>
    </hints>
   </connection>
@@ -266,11 +178,59 @@
    <hints>
     <hint type="sourcelabel">
      <x>61</x>
-     <y>234</y>
+     <y>184</y>
     </hint>
     <hint type="destinationlabel">
      <x>39</x>
      <y>49</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>templateTypeComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>TemplateSelector</receiver>
+   <slot>onTemplateTypeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>103</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>69</x>
+     <y>34</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sizeComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>TemplateSelector</receiver>
+   <slot>onPaperSizeChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>111</x>
+     <y>68</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>21</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>orientationComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>TemplateSelector</receiver>
+   <slot>onPaperOrientationChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>71</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>225</x>
+     <y>82</y>
     </hint>
    </hints>
   </connection>
@@ -279,5 +239,8 @@
   <slot>openTemplate()</slot>
   <slot>updateScaleText()</slot>
   <slot>loadHelpPage()</slot>
+  <slot>onTemplateTypeChanged(int)</slot>
+  <slot>onPaperSizeChanged(int)</slot>
+  <slot>onPaperOrientationChanged(int)</slot>
  </slots>
 </ui>

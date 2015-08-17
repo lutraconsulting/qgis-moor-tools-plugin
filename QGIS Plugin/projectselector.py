@@ -26,8 +26,9 @@ from qgis.core import *
 # Initialize Qt resources from file resources.py
 import resources_rc
 # Import the code for the dialog
-from projectselectordialog import ProjectSelectorDialog
-from templateselectordialog import TemplateSelectorDialog
+from projectselectordialog import *
+from templateselectordialog import *
+from settingsdialog import *
 import os.path
 
 
@@ -49,10 +50,6 @@ class ProjectSelector:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        # Create the dialog (after translation) and keep reference
-        self.projectSelectorDlg = ProjectSelectorDialog(self.iface)
-        self.templateSelectorDlg = TemplateSelectorDialog(self.iface)
-
     def initGui(self):
         # Create action that will start plugin configuration
         self.projectSelectorAction = QAction(
@@ -61,15 +58,18 @@ class ProjectSelector:
         self.templateSelectorAction = QAction(
             QIcon(":/plugins/projectselector/template_selector_icon.png"),
             u"Template Selector", self.iface.mainWindow())
+        self.configureAction = QAction(u"Configure Moor Tools", self.iface.mainWindow())
         # connect the action to the run method
         self.projectSelectorAction.triggered.connect(self.selectProject)
         self.templateSelectorAction.triggered.connect(self.selectTemplate)
+        self.configureAction.triggered.connect(self.configure)
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.projectSelectorAction)
         self.iface.addToolBarIcon(self.templateSelectorAction)
         self.iface.addPluginToMenu(u"&Moor Tools", self.projectSelectorAction)
         self.iface.addPluginToMenu(u"&Moor Tools", self.templateSelectorAction)
+        self.iface.addPluginToMenu(u"&Moor Tools", self.configureAction)
         
         # Connect the dialog to QGIS' initializationCompleted() signal
         QObject.connect( self.iface, SIGNAL("initializationCompleted()"), self.selectProject )
@@ -78,6 +78,7 @@ class ProjectSelector:
         # Disconnect the dialog to QGIS' initializationCompleted() signal
         QObject.disconnect( self.iface, SIGNAL("initializationCompleted()"), self.selectProject )
         # Remove the plugin menu item and icon
+        self.iface.removePluginMenu(u"&Moor Tools", self.configureAction)
         self.iface.removePluginMenu(u"&Moor Tools", self.projectSelectorAction)
         self.iface.removePluginMenu(u"&Moor Tools", self.templateSelectorAction)
         self.iface.removeToolBarIcon(self.projectSelectorAction)
@@ -86,24 +87,38 @@ class ProjectSelector:
 
     # run method that performs all the real work
     def selectProject(self):
+        try:
+            projectSelectorDlg = ProjectSelectorDialog(self.iface)
+        except ProjectSelectorException:
+            reply = QtGui.QMessageBox.question(self.iface.mainWindow(),
+                'Moor Tools (Project Selector): No Projects Folder Specified',
+                'It looks like you haven\'t yet specified the folder containing your QGIS start-up projects. Would you like to do that now?',
+                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
+            if reply == QtGui.QMessageBox.No:
+                return
+            self.configure()
+            return # The user will need to invoke the action again
         # show the dialog
-        self.projectSelectorDlg.show()
+        projectSelectorDlg.show()
         # Run the dialog event loop
-        result = self.projectSelectorDlg.exec_()
-        # See if OK was pressed
-        if result == 1:
-            # do something useful (delete the line containing pass and
-            # substitute with your code)
-            pass
+        result = projectSelectorDlg.exec_()
+    
+    def configure(self):
+        settingsDialog = SettingsDialog()
+        settingsDialog.show()
+        settingsDialog.exec_()
             
     # run method that performs all the real work
     def selectTemplate(self):
+        try:
+            templateSelectorDlg = TemplateSelectorDialog(self.iface)
+        except TemplateSelectorException:
+            reply = QtGui.QMessageBox.question(self.iface.mainWindow(), 'Moor Tools (Template Selector): No Template Folder Specified', 'It looks like you haven\'t yet specified the folder containing your templates. Would you like to do that now?', QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
+            if reply == QtGui.QMessageBox.No:
+                return
+            self.configure()
+            return # The user will need to invoke the action again
         # show the dialog
-        self.templateSelectorDlg.show()
+        templateSelectorDlg.show()
         # Run the dialog event loop
-        result = self.templateSelectorDlg.exec_()
-        # See if OK was pressed
-        if result == 1:
-            # do something useful (delete the line containing pass and
-            # substitute with your code)
-            pass
+        result = templateSelectorDlg.exec_()

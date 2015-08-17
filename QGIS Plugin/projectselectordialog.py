@@ -26,12 +26,13 @@ from PyQt4 import QtCore, QtGui
 from ui_projectselector import Ui_ProjectSelector
 # create the dialog for zoom to point
 
+class ProjectSelectorException(Exception):
+    pass
+
 
 class ProjectSelectorDialog(QtGui.QDialog):
     
     def __init__(self, iface):
-        
-        # import pydevd; pydevd.settrace(suspend=False)
         
         self.iface = iface
         QtGui.QDialog.__init__(self)
@@ -42,25 +43,38 @@ class ProjectSelectorDialog(QtGui.QDialog):
         
         # Disable OK button until we are sure we have at least one project
         self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
-        
+
+        # Set up the list of templates
+        s = QtCore.QSettings()
+        projectFileRoot = s.value("MoorTools/ProjectSelector/projectRoot", '', type=str)
+        if len(projectFileRoot) == 0 or not os.path.isdir(projectFileRoot):
+            raise ProjectSelectorException('\'%s\' is not a valid project file root folder.' % projectFileRoot)
+
         # Loads the projects data structure
-        # Each line in the file takes the form:
-        # Label|Path to .qgs file|Selected by default? (0 or 1)
-        # e.g. Default Project|Z:\Path\To\Projects\default.qgs|1
-        # Replace the path below with the path to your config file or edit examples\project_selector_config.txt
-        configFilePath = os.path.join(self.plugin_dir, 'examples', 'project_selector_config.txt')
-        # configFilePath = r'Q:\QGIS\plugins\project_selector_config\project_selector_config.txt'
-        configFile = open(configFilePath, 'r')
         self.projects = collections.OrderedDict()
-        for line in configFile:
-            try:
-                prettyName = line.split('|')[0]
-                path = line.split('|')[1]
-                enabled = line.split('|')[2].strip() == '1'
-                self.projects[prettyName] = path, enabled
-            except:
-                pass
-        configFile.close()
+
+        for entry in os.listdir(projectFileRoot):
+            projectFilePath = os.path.join(projectFileRoot, entry)
+            if os.path.isdir(projectFilePath):
+                continue
+            if entry.lower().endswith('.qgs'):
+                prettyName, dummy = os.path.splitext(entry)
+                self.projects[prettyName] = projectFilePath, False
+        defaultFilePath = os.path.join(projectFileRoot, 'default.txt')
+        try:
+            with open(defaultFilePath, 'r') as defaultFile:
+                defaultProject = defaultFile.read().strip()
+                if defaultProject.lower().endswith('.qgs'):
+                    defaultProject = defaultProject[:-4]
+        except IOError:
+            pass
+        try:
+            path, dummy = self.projects[defaultProject]
+            self.projects[defaultProject] = path, True
+        except KeyError:
+            pass
+        except UnboundLocalError:
+            pass
 
         self.radioButtons = []
         
