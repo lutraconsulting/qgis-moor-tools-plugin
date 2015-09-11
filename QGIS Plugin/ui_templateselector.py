@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_templateselector.ui'
 #
-# Created: Mon Aug 17 14:18:02 2015
+# Created: Mon Aug 17 16:57:00 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,18 +27,10 @@ class Ui_TemplateSelector(object):
     def setupUi(self, TemplateSelector):
         TemplateSelector.setObjectName(_fromUtf8("TemplateSelector"))
         TemplateSelector.setWindowModality(QtCore.Qt.ApplicationModal)
-        TemplateSelector.resize(297, 218)
+        TemplateSelector.resize(312, 244)
         TemplateSelector.setModal(True)
         self.gridLayout = QtGui.QGridLayout(TemplateSelector)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.buttonBox = QtGui.QDialogButtonBox(TemplateSelector)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Help|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.gridLayout.addWidget(self.buttonBox, 7, 0, 1, 5)
-        self.copyrightComboBox = QtGui.QComboBox(TemplateSelector)
-        self.copyrightComboBox.setObjectName(_fromUtf8("copyrightComboBox"))
-        self.gridLayout.addWidget(self.copyrightComboBox, 5, 1, 1, 4)
         self.mapScalesGroupBox = QtGui.QGroupBox(TemplateSelector)
         self.mapScalesGroupBox.setObjectName(_fromUtf8("mapScalesGroupBox"))
         self.gridLayout_2 = QtGui.QGridLayout(self.mapScalesGroupBox)
@@ -47,6 +39,14 @@ class Ui_TemplateSelector(object):
         self.scalesGridLayout.setObjectName(_fromUtf8("scalesGridLayout"))
         self.gridLayout_2.addLayout(self.scalesGridLayout, 0, 0, 1, 1)
         self.gridLayout.addWidget(self.mapScalesGroupBox, 3, 0, 1, 5)
+        self.buttonBox = QtGui.QDialogButtonBox(TemplateSelector)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Help|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.gridLayout.addWidget(self.buttonBox, 8, 0, 1, 5)
+        self.copyrightComboBox = QtGui.QComboBox(TemplateSelector)
+        self.copyrightComboBox.setObjectName(_fromUtf8("copyrightComboBox"))
+        self.gridLayout.addWidget(self.copyrightComboBox, 5, 1, 1, 4)
         self.suitableForLabel = QtGui.QLabel(TemplateSelector)
         self.suitableForLabel.setObjectName(_fromUtf8("suitableForLabel"))
         self.gridLayout.addWidget(self.suitableForLabel, 4, 0, 1, 1)
@@ -82,8 +82,22 @@ class Ui_TemplateSelector(object):
         self.orientationComboBox = QtGui.QComboBox(TemplateSelector)
         self.orientationComboBox.setObjectName(_fromUtf8("orientationComboBox"))
         self.gridLayout.addWidget(self.orientationComboBox, 2, 4, 1, 1)
+        self.poiLayerLabel = QtGui.QLabel(TemplateSelector)
+        self.poiLayerLabel.setEnabled(True)
+        self.poiLayerLabel.setObjectName(_fromUtf8("poiLayerLabel"))
+        self.gridLayout.addWidget(self.poiLayerLabel, 6, 0, 1, 1)
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem, 6, 1, 1, 1)
+        self.gridLayout.addItem(spacerItem, 7, 0, 1, 1)
+        self.poiLayerComboBox = QtGui.QComboBox(TemplateSelector)
+        self.poiLayerComboBox.setEnabled(True)
+        self.poiLayerComboBox.setObjectName(_fromUtf8("poiLayerComboBox"))
+        self.gridLayout.addWidget(self.poiLayerComboBox, 6, 1, 1, 2)
+        self.poiFieldLabel = QtGui.QLabel(TemplateSelector)
+        self.poiFieldLabel.setObjectName(_fromUtf8("poiFieldLabel"))
+        self.gridLayout.addWidget(self.poiFieldLabel, 6, 3, 1, 1)
+        self.poiFieldComboBox = QtGui.QComboBox(TemplateSelector)
+        self.poiFieldComboBox.setObjectName(_fromUtf8("poiFieldComboBox"))
+        self.gridLayout.addWidget(self.poiFieldComboBox, 6, 4, 1, 1)
 
         self.retranslateUi(TemplateSelector)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), TemplateSelector.reject)
@@ -110,4 +124,6 @@ class Ui_TemplateSelector(object):
         self.templateTypeLabel.setText(_translate("TemplateSelector", "Template Type", None))
         self.sizeLabel.setText(_translate("TemplateSelector", "Size", None))
         self.orientationLabel.setText(_translate("TemplateSelector", "Orientation", None))
+        self.poiLayerLabel.setText(_translate("TemplateSelector", "POI Layer", None))
+        self.poiFieldLabel.setText(_translate("TemplateSelector", "Field Name", None))
 

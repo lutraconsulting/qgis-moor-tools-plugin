@@ -52,6 +52,8 @@ class ProjectSelectorDialog(QtGui.QDialog):
 
         # Loads the projects data structure
         self.projects = collections.OrderedDict()
+        
+        # TODO: Adapt this to work with projects in subfolders (to facilitate aggregation)
 
         for entry in os.listdir(projectFileRoot):
             projectFilePath = os.path.join(projectFileRoot, entry)

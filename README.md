@@ -6,7 +6,7 @@ Tools for simplifying and automating common tasks for national parks and other p
 
 Although fully functional, this plugin has not yet been polished for release to the official QGIS plugin repository.
 
-Please note this plugin has been developed for very specific use cases and as such may require further work to make it more generic to suit users' wider requirements. Please feel free to create GitHub *issues* for reporting any bugs, queries or feature requests.
+Please note this plugin has been developed for very specific use cases and as such may require further work to make it more generic to suit users' wider requirements. Please feel free to create [GitHub *issues*](http://fixme.com) for reporting any bugs, queries or feature requests.
 
 ## Configuration
 
@@ -20,7 +20,7 @@ The _Projects Folder_ configuration option should point to a folder containing Q
 
 ![](Images/project_selector.png)
 
-Normally the first item in the _Project Selector_ dialog will be selected by default. To adjust this behaviour create a file called ``default.txt`` under the _Projects Folder_. In this file specify the name of the default project.  
+Normally the first item in the _Project Selector_ dialog will be selected by default. To adjust this behaviour create a file called ``default.txt`` under the _Projects Folder_. In this file specify the name of the default project (case sensitive, '.qgs' suffix optional).   
 
 ### Folder Containing Templates (Template Selector)
 
@@ -42,29 +42,63 @@ The _Folder Containing Templates_ configuration option specifies the path to a f
 			- Aerial 2010.txt
 			- default.txt
 	- Environmental Impact Assessment
-		- ... (similar content to previous example
+		- ... (similar folder content to previous example
 
 The names of the folders under the top-level container folder (e.g. _Planning Application_) are used to identify the type of print composer template (see image above).
 
 In the example above the _Planning Application_ template is available as A4 (Landscape and Portrait) and A3 (Landscape). All ISO A series sizes are supported.
 
-In this case the The optional _images_ folder contains any logos or other images referenced by the associated .qpt files. 
+In this case the optional _images_ folder contains any logos or other images referenced by the associated .qpt files. 
 
 The optional _Copyrights_ folder contains the copyright text(s) available when using the _Planning Application_ composer template. _default.txt_ can optionally be used to specify the default copyright text for the template. This is configured as described above for the _Project Selector_.
 
 ### Customising the Help URL
 
-You may be using Moor Tools as part of a wider QGIS deployment. In this case you may wish to override the destination URL of the Help button with your own content. This can be achieved by altering the definition of ``helpUrl`` towards the bottom of _templateselectordialog.py_
+You may be using Moor Tools as part of a wider QGIS deployment. In this case you may wish to override the destination URL of the Help button with your own content. This can be achieved by altering the definition of ``helpUrl`` towards the bottom of _templateselectordialog.py_ in the plugin source files.
 
 ## Creating Templates
+
+This section describes how to create effective composer templates.
+
+### String Replacement
 
 _Template Selector_ supports automatic replacement of strings in addition to those already supported by QGIS. The following strings will automatically be replaced within composer templates:
 
 - [username] : the user's username (e.g. %USERNAME%)
 - [title] : The _Title_ specified by the user in the above dialog
-- [copyright] : The content of the selected copyright file   
+- [copyright] : The content of the selected copyright file 
 
-Templates with multiple composer maps are supported. Composer maps are identified by their _Item ID_ property wherever present. 
+### Multiple Composer Maps    
+
+Templates with multiple composer maps are supported. Composer maps are identified by their _Item ID_ property wherever present and their scales can be set independently.
+
+### Points of Interest
+
+You may wish to highlight specific points on interest in your maps: 
+
+![](Images/points_of_interest_example.png)
+
+This can be achieved as follows:
+
+1. Create a new (point) layer describing your points of interest
+	1.  The example above included a field called 'label'
+2. Digitise your points of interest and add label values as required
+3. Style and label the layer as you wish it to appear in the print composer
+	1. The example above uses a red cross and associated label with buffer
+4. Choose a compatible template (these are explained below)
+	1. The _POI Layer_ options should now become active
+5. Select the points of interest layer and appropriate label field name
+
+The resulting print composer output should show the grid references for the points of interest. 
+
+### Creating Compatible Templates for Points of Interest
+
+Creating compatible templates is easy, simply:
+
+1. Add a label to the template
+2. Under its _Item Properties_, set the _Item ID_ property to _gridref_
+
+This label will be automatically updated with grid references of points of interest.    
 
 ## Troubleshooting
 
