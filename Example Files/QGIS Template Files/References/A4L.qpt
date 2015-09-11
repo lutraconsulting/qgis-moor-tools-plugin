@@ -1,0 +1,37 @@
+<Composer title="Test" visible="1">
+ <Composition gridVisible="0" printResolution="300" paperWidth="297" snapGridOffsetX="0" guidesVisible="1" snapGridResolution="10" snapGridOffsetY="0" alignmentSnap="1" snapping="0" snapTolerancePixels="5" numPages="1" paperHeight="210" smartGuides="1" printAsRaster="0" generateWorldFile="0">
+  <symbol alpha="1" type="fill" name="">
+   <layer pass="0" class="SimpleFill" locked="0">
+    <prop k="border_width_map_unit_scale" v="0,0"/>
+    <prop k="color" v="255,255,255,255"/>
+    <prop k="joinstyle" v="miter"/>
+    <prop k="offset" v="0,0"/>
+    <prop k="offset_map_unit_scale" v="0,0"/>
+    <prop k="offset_unit" v="MM"/>
+    <prop k="outline_color" v="0,0,0,255"/>
+    <prop k="outline_style" v="no"/>
+    <prop k="outline_width" v="0.26"/>
+    <prop k="outline_width_unit" v="MM"/>
+    <prop k="style" v="solid"/>
+   </layer>
+  </symbol>
+  <ComposerLabel valign="32" marginX="-1" marginY="1" labelText="Grid References&#xa;&#xa;A&#x9;TEST&#xa;B&#x9;TEST&#xa;C&#x9;TEST&#xa;D&#x9;TEST&#xa;E&#x9;TEST&#xa;F&#x9;TEST&#xa;G&#x9;TEST&#xa;H&#x9;TEST" htmlState="0" halign="1">
+   <LabelFont description="MS Shell Dlg 2,18,-1,5,50,0,0,0,0,0"/>
+   <FontColor red="0" blue="0" green="0"/>
+   <ComposerItem pagey="6" page="1" id="gridref" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="239.561" y="6" visibility="1" zValue="2" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="53.8106" outlineWidth="0.3" excludeFromExports="0" uuid="{c8c3539a-9265-49d6-9858-3e0a1c7db168}" height="53.6902" itemRotation="0" frame="false" pagex="239.561">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerMap mapRotation="0" keepLayerSet="false" id="0" previewMode="Cache" drawCanvasItems="true">
+   <Extent ymin="533595.33459122444037348" xmin="336933.259028481610585" ymax="553220.55775607598479837" xmax="360027.08318476186832413"/>
+   <LayerSet/>
+   <Grid/>
+   <AtlasMap scalingMode="2" atlasDriven="0" margin="0.10000000000000001"/>
+   <ComposerItem pagey="6" page="1" id="" lastValidViewScaleFactor="1.9327" positionMode="0" positionLock="false" x="5" y="6" visibility="1" zValue="1" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="228.568" outlineWidth="0.3" excludeFromExports="0" uuid="{733f59fa-eab0-448c-9112-1101b12d36b2}" height="194.238" itemRotation="0" frame="false" pagex="5">
+    <FrameColor alpha="255" red="0" blue="0" green="0"/>
+    <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+   </ComposerItem>
+  </ComposerMap>
+ </Composition>
+</Composer>

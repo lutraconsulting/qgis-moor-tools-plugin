@@ -1,2 +1,0 @@
-Default|C:\tmp\QGIS Projects\default.qgs|1
-Other|C:\tmp\QGIS Projects\other.qgs|0

@@ -41,8 +41,6 @@ class TemplateSelectorDialog(QtGui.QDialog):
     
     def __init__(self, iface):
 
-        # import pydevd; pydevd.settrace(suspend=False)
-        
         self.supportedPaperSizes = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8'] # ISO A series
         self.paperSizesPresent = []
         self.presetScales = ['200', '500', '1,000', '1,250', '2,500', '5,000', '10,000', '25,000', '50,000', '100,000']

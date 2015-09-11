@@ -39,8 +39,6 @@ class SettingsDialog(QtGui.QDialog):
 
         self.settings = QtCore.QSettings()
 
-        # import pydevd; pydevd.settrace('localhost', port=5678)
-
         # Populate the values
         v = self.settings.value('MoorTools/ProjectSelector/projectRoot', '', type=str)
         self.ui.projectsFolderLineEdit.setText(v)
