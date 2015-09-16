@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui_projectselector.ui'
 #
-# Created: Wed Dec 04 14:18:29 2013
-#      by: PyQt4 UI code generator 4.8.3
+# Created: Wed Sep 16 10:49:27 2015
+#      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,13 +12,22 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_ProjectSelector(object):
     def setupUi(self, ProjectSelector):
         ProjectSelector.setObjectName(_fromUtf8("ProjectSelector"))
         ProjectSelector.setWindowModality(QtCore.Qt.ApplicationModal)
-        ProjectSelector.resize(178, 84)
+        ProjectSelector.resize(365, 95)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -27,23 +36,38 @@ class Ui_ProjectSelector(object):
         ProjectSelector.setModal(True)
         self.gridLayout = QtGui.QGridLayout(ProjectSelector)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.groupBox = QtGui.QGroupBox(ProjectSelector)
-        self.groupBox.setObjectName(_fromUtf8("groupBox"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.groupBox)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.gridLayout.addWidget(self.groupBox, 0, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(ProjectSelector)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
+        self.formLayout = QtGui.QFormLayout()
+        self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
+        self.formLayout.setObjectName(_fromUtf8("formLayout"))
+        self.label = QtGui.QLabel(ProjectSelector)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.label)
+        self.projectGroupComboBox = QtGui.QComboBox(ProjectSelector)
+        self.projectGroupComboBox.setObjectName(_fromUtf8("projectGroupComboBox"))
+        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.projectGroupComboBox)
+        self.label_2 = QtGui.QLabel(ProjectSelector)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label_2)
+        self.selectedProjectComboBox = QtGui.QComboBox(ProjectSelector)
+        self.selectedProjectComboBox.setObjectName(_fromUtf8("selectedProjectComboBox"))
+        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.selectedProjectComboBox)
+        self.gridLayout.addLayout(self.formLayout, 0, 0, 1, 2)
 
         self.retranslateUi(ProjectSelector)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), ProjectSelector.reject)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), ProjectSelector.loadProject)
+        QtCore.QObject.connect(self.projectGroupComboBox, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), ProjectSelector.onProjectGroupChanged)
         QtCore.QMetaObject.connectSlotsByName(ProjectSelector)
+        ProjectSelector.setTabOrder(self.projectGroupComboBox, self.selectedProjectComboBox)
+        ProjectSelector.setTabOrder(self.selectedProjectComboBox, self.buttonBox)
 
     def retranslateUi(self, ProjectSelector):
-        ProjectSelector.setWindowTitle(QtGui.QApplication.translate("ProjectSelector", "Select Project", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("ProjectSelector", "Available Projects", None, QtGui.QApplication.UnicodeUTF8))
+        ProjectSelector.setWindowTitle(_translate("ProjectSelector", "Select Project", None))
+        self.label.setText(_translate("ProjectSelector", "Project Groups", None))
+        self.label_2.setText(_translate("ProjectSelector", "Selected Project", None))
 

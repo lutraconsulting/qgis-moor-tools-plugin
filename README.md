@@ -16,11 +16,21 @@ Moor Tools can be configured from within QGIS via Plugins Menu > Moor Tools > Co
 
 ### Projects Folder (Project Selector)
 
-The _Projects Folder_ configuration option should point to a folder containing QGIS project files (.qgs files) which will be presented to the user on QGIS start-up. 
+The _Project Selector_ simplifies project selection on QGIS startup by presenting the user with a number of grouped projects:
 
 ![](Images/project_selector.png)
 
-Normally the first item in the _Project Selector_ dialog will be selected by default. To adjust this behaviour create a file called ``default.txt`` under the _Projects Folder_. In this file specify the name of the default project (case sensitive, '.qgs' suffix optional).   
+The _Projects Folder_ configuration option should point to a folder with a structure like this:
+
+- top-level container folder
+	- Environment (folder)
+		- EIAs.qgs
+	- Planning (folder)
+		- Highways.qgs
+		- Planning Applications.qgs
+		- default.txt
+
+QGIS project files (.qgs files) are grouped into folders. Folder names are used to populate the _Project Groups_ drop-down menu. A file called ``default.txt`` placed under a group folder can be used to influence the default selected project. Within ``default.txt`` specify the name of the default project (case sensitive, '.qgs' suffix optional).   
 
 ### Folder Containing Templates (Template Selector)
 
