@@ -44,7 +44,7 @@ class TemplateSelectorDialog(QtGui.QDialog):
         self.supportedPaperSizes = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8'] # ISO A series
         self.paperSizesPresent = []
         self.presetScales = ['200', '500', '1,000', '1,250', '2,500', '5,000', '10,000', '25,000', '50,000', '100,000']
-        
+
         self.iface = iface
         QtGui.QDialog.__init__(self)
         # Set up the user interface from Designer.
@@ -95,7 +95,10 @@ class TemplateSelectorDialog(QtGui.QDialog):
             if os.path.isdir( os.path.join(self.templateFileRoot, entry) ):
                 for subentry in os.listdir(os.path.join(self.templateFileRoot, entry)):
                     filePath = os.path.join(self.templateFileRoot, entry, subentry)
-                    if os.path.isfile(filePath) and filePath.lower().endswith('.qpt'):
+                    dummy, fileName = os.path.split(filePath)
+                    if os.path.isfile(filePath) and \
+                       fileName.lower().endswith('.qpt') and \
+                       fileName[:2] in self.supportedPaperSizes:
                         self.ui.templateTypeComboBox.addItem(entry)
                         break
         self.ui.templateTypeComboBox.blockSignals(False)
@@ -140,11 +143,20 @@ class TemplateSelectorDialog(QtGui.QDialog):
     
     def onPaperOrientationChanged(self, newIdx=None):
         self.populateScaleChoices()
-        self.ui.poiLayerLabel.setEnabled( self.hasGridRefs() )
-        self.ui.poiLayerComboBox.setEnabled( self.hasGridRefs() )
-        self.ui.poiFieldLabel.setEnabled( self.hasGridRefs() )
-        self.ui.poiFieldComboBox.setEnabled( self.hasGridRefs() )
-
+        poiEnabled = False
+        if self.ui.orientationComboBox.count() > 0:
+            poiEnabled = self.hasGridRefs()
+        self.ui.poiLayerLabel.setEnabled( poiEnabled )
+        self.ui.poiLayerComboBox.setEnabled( poiEnabled )
+        self.ui.poiFieldLabel.setEnabled( poiEnabled )
+        self.ui.poiFieldComboBox.setEnabled( poiEnabled )
+        # At this point we should know what the path to the .qpt file would be if the user was to hit OK
+        # Check it exists and update the OK button appropriately
+        qptFilePath = self.getQptFilePath()
+        if qptFilePath is None or not os.path.isfile(qptFilePath):
+            self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        else:
+            self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
 
     """
     def clearScaleChoices(self):
@@ -214,9 +226,13 @@ class TemplateSelectorDialog(QtGui.QDialog):
         return composerNames
 
     def getQptFilePath(self):
-        qptFilePath = os.path.join( self.templateFileRoot,
-                                    self.ui.templateTypeComboBox.currentText(),
-                                    self.ui.sizeComboBox.currentText() + self.ui.orientationComboBox.currentText()[0] + '.qpt' )
+        try:
+            qptFilePath = os.path.join( self.templateFileRoot,
+                                        self.ui.templateTypeComboBox.currentText(),
+                                        self.ui.sizeComboBox.currentText() + self.ui.orientationComboBox.currentText()[0] +
+                                        '.qpt' )
+        except IndexError:
+            qptFilePath = None
         return qptFilePath
 
     def hasGridRefs(self):
