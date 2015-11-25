@@ -68,6 +68,9 @@ class ProjectSelectorDialog(QtGui.QDialog):
         defaultGroup = self.settings.value('MoorTools/ProjectSelector/defaultProjectGroup', '', type=str)
         if len(defaultGroup) > 0:
             self.ui.projectGroupComboBox.setCurrentIndex( self.ui.projectGroupComboBox.findText(defaultGroup) )
+        if self.ui.projectGroupComboBox.count() == 1:
+            self.ui.projectGroupComboBox.setCurrentIndex(0)
+            self.ui.projectGroupComboBox.setEnabled(False)
         self.onProjectGroupChanged()
         
     def getDefaultProject(self, location):
@@ -87,11 +90,11 @@ class ProjectSelectorDialog(QtGui.QDialog):
         
         # Called when the project group changes
         # Used to update the list of projects within this group
-        
+
         projectGroupname = self.ui.projectGroupComboBox.currentText()
         if projectGroupname == '':
             return
-        self.ui.selectedProjectComboBox.clear()
+        self.ui.selectedProjectListWidget.clear()
         self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
         groupFolderPath = os.path.join(self.projectFileRoot, projectGroupname)
         for entry in os.listdir(groupFolderPath):
@@ -100,20 +103,23 @@ class ProjectSelectorDialog(QtGui.QDialog):
                 continue
             if entry.lower().endswith('.qgs'):
                 prettyName, dummy = os.path.splitext(entry)
-                self.ui.selectedProjectComboBox.addItem(prettyName)
+                self.ui.selectedProjectListWidget.addItem(prettyName)
                 self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
         
         # Set the default project (if exists)
         defP = self.getDefaultProject(groupFolderPath)
         if defP != None:
-            self.ui.selectedProjectComboBox.setCurrentIndex( self.ui.selectedProjectComboBox.findText(defP) )
+            for i in range(self.ui.selectedProjectListWidget.count()):
+                if self.ui.selectedProjectListWidget.item(i).text() == defP:
+                    self.ui.selectedProjectListWidget.setCurrentRow(i)
+                    break
         else:
-            self.ui.selectedProjectComboBox.setCurrentIndex(0)
+            self.ui.selectedProjectListWidget.setCurrentRow(0)
                     
     def loadProject(self):
         
         groupName = self.ui.projectGroupComboBox.currentText()
-        projectName = self.ui.selectedProjectComboBox.currentText()
+        projectName = self.ui.selectedProjectListWidget.selectedItems()[0].text()
         projectPath = os.path.join( self.projectFileRoot, groupName, projectName + '.qgs' )
         
         self.iface.addProject(projectPath)

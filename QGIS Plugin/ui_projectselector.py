@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui_projectselector.ui'
 #
-# Created: Wed Sep 16 10:49:27 2015
+# Created: Wed Nov 25 15:28:52 2015
 #      by: PyQt4 UI code generator 4.10.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,7 +27,7 @@ class Ui_ProjectSelector(object):
     def setupUi(self, ProjectSelector):
         ProjectSelector.setObjectName(_fromUtf8("ProjectSelector"))
         ProjectSelector.setWindowModality(QtCore.Qt.ApplicationModal)
-        ProjectSelector.resize(365, 95)
+        ProjectSelector.resize(470, 285)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -36,11 +36,6 @@ class Ui_ProjectSelector(object):
         ProjectSelector.setModal(True)
         self.gridLayout = QtGui.QGridLayout(ProjectSelector)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.buttonBox = QtGui.QDialogButtonBox(ProjectSelector)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.gridLayout.addWidget(self.buttonBox, 1, 1, 1, 1)
         self.formLayout = QtGui.QFormLayout()
         self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout.setObjectName(_fromUtf8("formLayout"))
@@ -53,18 +48,22 @@ class Ui_ProjectSelector(object):
         self.label_2 = QtGui.QLabel(ProjectSelector)
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.formLayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label_2)
-        self.selectedProjectComboBox = QtGui.QComboBox(ProjectSelector)
-        self.selectedProjectComboBox.setObjectName(_fromUtf8("selectedProjectComboBox"))
-        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.selectedProjectComboBox)
-        self.gridLayout.addLayout(self.formLayout, 0, 0, 1, 2)
+        self.selectedProjectListWidget = QtGui.QListWidget(ProjectSelector)
+        self.selectedProjectListWidget.setObjectName(_fromUtf8("selectedProjectListWidget"))
+        self.formLayout.setWidget(1, QtGui.QFormLayout.FieldRole, self.selectedProjectListWidget)
+        self.gridLayout.addLayout(self.formLayout, 0, 0, 1, 1)
+        self.buttonBox = QtGui.QDialogButtonBox(ProjectSelector)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
 
         self.retranslateUi(ProjectSelector)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), ProjectSelector.reject)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), ProjectSelector.loadProject)
         QtCore.QObject.connect(self.projectGroupComboBox, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), ProjectSelector.onProjectGroupChanged)
         QtCore.QMetaObject.connectSlotsByName(ProjectSelector)
-        ProjectSelector.setTabOrder(self.projectGroupComboBox, self.selectedProjectComboBox)
-        ProjectSelector.setTabOrder(self.selectedProjectComboBox, self.buttonBox)
+        ProjectSelector.setTabOrder(self.projectGroupComboBox, self.buttonBox)
 
     def retranslateUi(self, ProjectSelector):
         ProjectSelector.setWindowTitle(_translate("ProjectSelector", "Select Project", None))
