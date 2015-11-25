@@ -24,4 +24,3 @@ xcopy /y examples\*.* %DEST%\examples
 xcopy /y Templates\*.* %DEST%\Templates
 xcopy /y Templates\Logos\*.* %DEST%\Templates\Logos
 
-PAUSE

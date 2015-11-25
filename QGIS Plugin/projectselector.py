@@ -50,6 +50,8 @@ class ProjectSelector:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
+        self.first_project_selection = True
+
     def initGui(self):
         # Create action that will start plugin configuration
         self.projectSelectorAction = QAction(
@@ -87,6 +89,11 @@ class ProjectSelector:
 
     # run method that performs all the real work
     def selectProject(self):
+        if QgsProject.instance().fileName() and self.first_project_selection:
+            # Do not show the project selection if we initialised QGIS by opening a project already
+            self.first_project_selection = False
+            return
+        self.first_project_selection = False
         try:
             projectSelectorDlg = ProjectSelectorDialog(self.iface)
         except ProjectSelectorException:
@@ -102,7 +109,7 @@ class ProjectSelector:
         projectSelectorDlg.show()
         # Run the dialog event loop
         result = projectSelectorDlg.exec_()
-    
+
     def configure(self):
         settingsDialog = SettingsDialog()
         settingsDialog.show()
