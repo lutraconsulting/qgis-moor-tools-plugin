@@ -20,19 +20,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0" colspan="5">
-    <widget class="QGroupBox" name="mapScalesGroupBox">
-     <property name="title">
-      <string>Composer Map Scale(s)</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <layout class="QGridLayout" name="scalesGridLayout"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="8" column="0" colspan="5">
+   <item row="9" column="0" colspan="5">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -42,24 +30,90 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="4">
-    <widget class="QComboBox" name="copyrightComboBox"/>
+   <item row="7" column="4">
+    <widget class="QComboBox" name="poiFieldComboBox"/>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="suitableForLabel">
+   <item row="7" column="3">
+    <widget class="QLabel" name="poiFieldLabel">
      <property name="text">
-      <string>Suitable for</string>
+      <string>Field Name</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="0" column="1" colspan="4">
+    <widget class="QComboBox" name="templateTypeComboBox"/>
+   </item>
+   <item row="6" column="0">
     <widget class="QLabel" name="copyrightLabel">
      <property name="text">
       <string>Copyright</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="4">
+   <item row="6" column="1" colspan="4">
+    <widget class="QComboBox" name="copyrightComboBox"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="templateTypeLabel">
+     <property name="text">
+      <string>Template Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="sizeLabel">
+     <property name="text">
+      <string>Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QComboBox" name="sizeComboBox"/>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLabel" name="orientationLabel">
+     <property name="text">
+      <string>Orientation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QComboBox" name="orientationComboBox"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="poiLayerLabel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>POI Layer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="7" column="1" colspan="2">
+    <widget class="QComboBox" name="poiLayerComboBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="4">
+    <widget class="QLineEdit" name="titleLineEdit"/>
+   </item>
+   <item row="5" column="1" colspan="4">
     <widget class="QComboBox" name="suitableForComboBox">
      <item>
       <property name="text">
@@ -73,9 +127,6 @@
      </item>
     </widget>
    </item>
-   <item row="0" column="1" colspan="4">
-    <widget class="QComboBox" name="templateTypeComboBox"/>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="titleLabel">
      <property name="text">
@@ -83,84 +134,47 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="4">
-    <widget class="QLineEdit" name="titleLineEdit"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="templateTypeLabel">
+   <item row="5" column="0">
+    <widget class="QLabel" name="suitableForLabel">
      <property name="text">
-      <string>Template Type</string>
+      <string>Suitable for</string>
      </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="5">
+    <widget class="QGroupBox" name="mapScalesGroupBox">
+     <property name="title">
+      <string>Composer Map Scale(s)</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="scalesGridLayout"/>
+      </item>
+     </layout>
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="sizeLabel">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Size</string>
+      <string>Sub-title</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QComboBox" name="sizeComboBox"/>
-   </item>
-   <item row="2" column="3">
-    <widget class="QLabel" name="orientationLabel">
-     <property name="text">
-      <string>Orientation</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="4">
-    <widget class="QComboBox" name="orientationComboBox"/>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="poiLayerLabel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>POI Layer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="6" column="1" colspan="2">
-    <widget class="QComboBox" name="poiLayerComboBox">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="3">
-    <widget class="QLabel" name="poiFieldLabel">
-     <property name="text">
-      <string>Field Name</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="4">
-    <widget class="QComboBox" name="poiFieldComboBox"/>
+   <item row="2" column="1" colspan="4">
+    <widget class="QLineEdit" name="subtitleLineEdit"/>
    </item>
   </layout>
  </widget>
  <tabstops>
+  <tabstop>templateTypeComboBox</tabstop>
   <tabstop>titleLineEdit</tabstop>
+  <tabstop>subtitleLineEdit</tabstop>
   <tabstop>sizeComboBox</tabstop>
   <tabstop>orientationComboBox</tabstop>
   <tabstop>suitableForComboBox</tabstop>
   <tabstop>copyrightComboBox</tabstop>
+  <tabstop>poiLayerComboBox</tabstop>
+  <tabstop>poiFieldComboBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

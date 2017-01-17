@@ -29,6 +29,7 @@ from ui_templateselector import Ui_TemplateSelector
 import os
 import traceback
 import re
+import locale
 from xml.etree import ElementTree as ET
 from xy_to_osgb import xy_to_osgb
 
@@ -158,15 +159,6 @@ class TemplateSelectorDialog(QtGui.QDialog):
         else:
             self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
 
-    """
-    def clearScaleChoices(self):
-        width = self.ui.scalesGridLayout.columnCount()
-        height = self.ui.scalesGridLayout.rowCount()
-        for row in range(height):
-            for col in range(width):
-                self.ui.scalesGridLayout
-    """
-
     def populateScaleChoices(self):
         
         """ When the template type combo is initialised or changes, update the 
@@ -195,6 +187,11 @@ class TemplateSelectorDialog(QtGui.QDialog):
 
             comboBox = QtGui.QComboBox()
             comboBox.setEditable(True)
+            # Add current canvas scale
+            locale.setlocale(locale.LC_ALL, '')
+            currentMapCanvasScale = self.iface.mapCanvas().scale()
+            scaleString = locale.format('%d', currentMapCanvasScale, grouping=True)
+            comboBox.addItem('%s (Current map canvas)' % scaleString)
             for scale in self.presetScales:
                 comboBox.addItem(str(scale))
             self.ui.scalesGridLayout.addWidget(comboBox, i, 3)
@@ -298,12 +295,14 @@ class TemplateSelectorDialog(QtGui.QDialog):
         
         # Load replaceable text
         projectTitle = self.ui.titleLineEdit.text()
+        projectSubTitle = self.ui.subtitleLineEdit.text()
         
         # Set copyright
     
         copyrightIndex = self.ui.copyrightComboBox.currentIndex()
         self.replaceMap['copyright'] = self.getCopyrightText()
         self.replaceMap['title'] = projectTitle
+        self.replaceMap['subtitle'] = projectSubTitle
         
         # Create a new Composer View with name equal to the project 
         # title
@@ -350,7 +349,12 @@ class TemplateSelectorDialog(QtGui.QDialog):
             # Get the scale denominator (as a floating point)
             scaleCombo = self.ui.scalesGridLayout.itemAtPosition(i, 3).widget()
             assert scaleCombo != 0
-            scaleDenom = float(scaleCombo.currentText().replace(',', ''))
+            try:
+                scaleDenom = float(scaleCombo.currentText().replace(',', ''))
+            except ValueError:
+                cleanedScaleString = scaleCombo.currentText().split(' (')[0]
+                cleanedScaleString = cleanedScaleString.replace(')', '')
+                scaleDenom = float(cleanedScaleString.replace(',', ''))
             # Set the scale
             cme = compMap.extent()
             canvasEx = self.iface.mapCanvas().extent()

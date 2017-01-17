@@ -76,6 +76,7 @@ _Template Selector_ supports automatic replacement of strings in addition to tho
 
 - [username] : the user's username (e.g. %USERNAME%)
 - [title] : The _Title_ specified by the user in the above dialog
+- [subtitle] : The _Sub-title_ specified by the user in the above dialog
 - [copyright] : The content of the selected copyright file 
 
 ### Multiple Composer Maps    

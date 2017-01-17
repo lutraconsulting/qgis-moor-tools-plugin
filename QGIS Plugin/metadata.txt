@@ -12,7 +12,7 @@
 name=Project Selector
 qgisMinimumVersion=2.0
 description=Tool for selecting pre-defined QGIS projects.
-version=1.0.2
+version=1.1.0
 author=Dartmoor National Park Authority
 email=gi@dartmoor.gov.uk
 
@@ -21,7 +21,10 @@ email=gi@dartmoor.gov.uk
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=1.0.2 - Bug fixes:
+changelog=1.1.0 - New features:
+ - Added support for sub-title (template selector)
+ - Added current map canvas scale as an option (template selector)
+ <p>1.0.2 - Bug fixes:
  - Do not show project selector dialog when QGIS invoked to open existing project
  <p>1.0.1 - Bug fixes:
  - Python error seen when pointing the plugin at a malformed templates folder
