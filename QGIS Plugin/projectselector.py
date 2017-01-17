@@ -74,11 +74,11 @@ class ProjectSelector:
         self.iface.addPluginToMenu(u"&Moor Tools", self.configureAction)
         
         # Connect the dialog to QGIS' initializationCompleted() signal
-        QObject.connect( self.iface, SIGNAL("initializationCompleted()"), self.selectProject )
+        QObject.connect( self.iface, SIGNAL("initializationCompleted()"), self.onInitializationCompleted )
 
     def unload(self):
         # Disconnect the dialog to QGIS' initializationCompleted() signal
-        QObject.disconnect( self.iface, SIGNAL("initializationCompleted()"), self.selectProject )
+        QObject.disconnect( self.iface, SIGNAL("initializationCompleted()"), self.onInitializationCompleted )
         # Remove the plugin menu item and icon
         self.iface.removePluginMenu(u"&Moor Tools", self.configureAction)
         self.iface.removePluginMenu(u"&Moor Tools", self.projectSelectorAction)
@@ -86,6 +86,12 @@ class ProjectSelector:
         self.iface.removeToolBarIcon(self.projectSelectorAction)
         self.iface.removeToolBarIcon(self.templateSelectorAction)
         
+    def onInitializationCompleted(self):
+        if len(QgsProject.instance().fileName()) == 0:
+            # The project file name will only be populated after the initializationCompleted() signal is emitted if QGIS has
+            # been invoked on a .qgs (project) file.  So only show the selector if we've not been opened on an existing .qgs
+            # file
+            self.selectProject()    
 
     # run method that performs all the real work
     def selectProject(self):
