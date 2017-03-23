@@ -11,10 +11,12 @@
 [general]
 name=Project Selector
 qgisMinimumVersion=2.0
+qgisMaximumVersion=2.99
 description=Tool for selecting pre-defined QGIS projects.
 version=1.1.1
 author=Dartmoor National Park Authority
 email=gi@dartmoor.gov.uk
+about=Tools for simplifying and automating common tasks for national parks and other protected areas. Catchy name courtesy of Dartmoor National Park, UK.
 
 # end of mandatory metadata
 
@@ -37,13 +39,12 @@ changelog=1.1.1 - Bug fixes:
 # tags are comma separated with spaces allowed
 tags=
 
-homepage=
-tracker=
-repository=
+homepage=https://github.com/lutraconsulting/qgis-moor-tools-plugin/blob/master/README.md
+tracker=https://github.com/lutraconsulting/qgis-moor-tools-plugin/issues
+repository=https://github.com/lutraconsulting/qgis-moor-tools-plugin
 icon=icon.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False
-
