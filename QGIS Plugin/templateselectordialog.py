@@ -354,7 +354,7 @@ class TemplateSelectorDialog(QtGui.QDialog):
             except ValueError:
                 cleanedScaleString = scaleCombo.currentText().split(' (')[0]
                 cleanedScaleString = cleanedScaleString.replace(')', '')
-                scaleDenom = float(cleanedScaleString.replace(',', ''))
+                scaleDenom = float(cleanedScaleString.replace(',', '').replace(' ', ''))
             # Set the scale
             cme = compMap.extent()
             canvasEx = self.iface.mapCanvas().extent()
@@ -410,4 +410,3 @@ class TemplateSelectorDialog(QtGui.QDialog):
     def loadHelpPage(self):
         helpUrl = 'https://github.com/lutraconsulting/qgis-moor-tools-plugin/blob/master/README.md'
         QtGui.QDesktopServices.openUrl(QtCore.QUrl(helpUrl))
-        
