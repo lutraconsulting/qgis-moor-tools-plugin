@@ -28,7 +28,6 @@ from ui_templateselector import Ui_TemplateSelector
 
 import os
 import traceback
-import re
 import locale
 from xml.etree import ElementTree as ET
 from xy_to_osgb import xy_to_osgb
@@ -36,22 +35,22 @@ from xy_to_osgb import xy_to_osgb
 
 class TemplateSelectorException(Exception):
     pass
-        
-        
+
+
 class TemplateSelectorDialog(QtGui.QDialog):
-    
     def __init__(self, iface):
 
-        self.supportedPaperSizes = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8'] # ISO A series
+        self.supportedPaperSizes = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8']  # ISO A series
         self.paperSizesPresent = []
-        self.presetScales = ['200', '500', '1,000', '1,250', '2,500', '5,000', '10,000', '25,000', '50,000', '100,000']
+        self.presetScales = ['200', '500', '1 000', '1 250', '2 500', '5 000', '10 000', '25 000', '50 000', '100 000']
+        self.maps_properties = {}
 
         self.iface = iface
         QtGui.QDialog.__init__(self)
         # Set up the user interface from Designer.
         self.ui = Ui_TemplateSelector()
         self.ui.setupUi(self)
-        
+
         # Set up the list of templates
         s = QtCore.QSettings()
         self.templateFileRoot = s.value("MoorTools/TemplateSelector/templateRoot", '', type=str)
@@ -60,14 +59,28 @@ class TemplateSelectorDialog(QtGui.QDialog):
         self.populateTemplateTypes()
         self.populatePoiLayers()
         self.onPoiLayerChanged()
-        
+
         self.onTemplateTypeChanged()
         self.plugin_dir = os.path.dirname(__file__)
-        
-        # Replacement map
-        self.replaceMap = { 'username' : os.environ['username'] }
 
-    
+        # Replacement map
+        self.replaceMap = {'username': os.environ['username']}
+        self.ui.autofit_btn.clicked.connect(self.autofit_map)
+
+    def autofit_map(self):
+        map_extent = self.iface.mapCanvas().extent()
+        me_height = map_extent.height() * 1000
+        me_width = map_extent.width() * 1000
+        for map_name, values in self.maps_properties.items():
+            idx = values['idx']
+            h = values['height']
+            w = values['width']
+            hscale = me_height / h
+            wscale = me_width / w
+            scale = hscale if hscale > wscale else wscale
+            scaleCombo = self.ui.scalesGridLayout.itemAtPosition(idx, 3).widget()
+            scaleCombo.addItem(str(scale))
+
     def onPoiLayerChanged(self):
         # Populate the list of available attribute names
         self.ui.poiFieldComboBox.blockSignals(True)
@@ -75,9 +88,8 @@ class TemplateSelectorDialog(QtGui.QDialog):
         for layer in self.iface.mapCanvas().layers():
             if layer.name() == self.ui.poiLayerComboBox.currentText():
                 for field in layer.dataProvider().fields().toList():
-                    self.ui.poiFieldComboBox.addItem( field.name() )
+                    self.ui.poiFieldComboBox.addItem(field.name())
         self.ui.poiFieldComboBox.blockSignals(False)
-
 
     def populatePoiLayers(self):
         # Called once on init
@@ -88,22 +100,21 @@ class TemplateSelectorDialog(QtGui.QDialog):
                 continue
             self.ui.poiLayerComboBox.addItem(layer.name())
 
-
     def populateTemplateTypes(self):
         self.ui.templateTypeComboBox.blockSignals(True)
         self.ui.templateTypeComboBox.clear()
         for entry in os.listdir(self.templateFileRoot):
-            if os.path.isdir( os.path.join(self.templateFileRoot, entry) ):
+            if os.path.isdir(os.path.join(self.templateFileRoot, entry)):
                 for subentry in os.listdir(os.path.join(self.templateFileRoot, entry)):
                     filePath = os.path.join(self.templateFileRoot, entry, subentry)
                     dummy, fileName = os.path.split(filePath)
                     if os.path.isfile(filePath) and \
-                       fileName.lower().endswith('.qpt') and \
-                       fileName[:2] in self.supportedPaperSizes:
+                            fileName.lower().endswith('.qpt') and \
+                                    fileName[:2] in self.supportedPaperSizes:
                         self.ui.templateTypeComboBox.addItem(entry)
                         break
         self.ui.templateTypeComboBox.blockSignals(False)
-    
+
     def onTemplateTypeChanged(self, newIdx=None):
         # Determine what paper sizes are available
         self.ui.sizeComboBox.blockSignals(True)
@@ -126,7 +137,7 @@ class TemplateSelectorDialog(QtGui.QDialog):
             paperSize = entry[:2]
             if paperSize in self.supportedPaperSizes and not paperSize in self.paperSizesPresent:
                 self.paperSizesPresent.append(paperSize)
-    
+
     def onPaperSizeChanged(self, newIdx=None):
         # Determine what orientations are available
         self.ui.orientationComboBox.blockSignals(True)
@@ -141,16 +152,16 @@ class TemplateSelectorDialog(QtGui.QDialog):
                         self.ui.orientationComboBox.addItem('Landscape')
         self.ui.orientationComboBox.blockSignals(False)
         self.onPaperOrientationChanged()
-    
+
     def onPaperOrientationChanged(self, newIdx=None):
         self.populateScaleChoices()
         poiEnabled = False
         if self.ui.orientationComboBox.count() > 0:
             poiEnabled = self.hasGridRefs()
-        self.ui.poiLayerLabel.setEnabled( poiEnabled )
-        self.ui.poiLayerComboBox.setEnabled( poiEnabled )
-        self.ui.poiFieldLabel.setEnabled( poiEnabled )
-        self.ui.poiFieldComboBox.setEnabled( poiEnabled )
+        self.ui.poiLayerLabel.setEnabled(poiEnabled)
+        self.ui.poiLayerComboBox.setEnabled(poiEnabled)
+        self.ui.poiFieldLabel.setEnabled(poiEnabled)
+        self.ui.poiFieldComboBox.setEnabled(poiEnabled)
         # At this point we should know what the path to the .qpt file would be if the user was to hit OK
         # Check it exists and update the OK button appropriately
         qptFilePath = self.getQptFilePath()
@@ -160,8 +171,8 @@ class TemplateSelectorDialog(QtGui.QDialog):
             self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
 
     def populateScaleChoices(self):
-        
-        """ When the template type combo is initialised or changes, update the 
+
+        """ When the template type combo is initialised or changes, update the
         layout of scales for the various Composer Maps """
 
         # Clear previous
@@ -209,25 +220,29 @@ class TemplateSelectorDialog(QtGui.QDialog):
             return composerNames
 
         root = ET.parse(self.getQptFilePath())
-        
+
         i = 1
         for composerMapElement in root.findall("./Composition/ComposerMap"):
             try:
                 name = composerMapElement.find('ComposerItem').attrib['id']
+                width = composerMapElement.find('ComposerItem').attrib['width']
+                height = composerMapElement.find('ComposerItem').attrib['height']
             except ValueError:
                 name = 'Map %d' % i
             if len(name) == 0:
                 name = 'Map %d' % i
+            self.maps_properties[name] = {'width': float(width), 'height': float(height), 'idx': i - 1}
             composerNames.append(name)
             i += 1
         return composerNames
 
     def getQptFilePath(self):
         try:
-            qptFilePath = os.path.join( self.templateFileRoot,
-                                        self.ui.templateTypeComboBox.currentText(),
-                                        self.ui.sizeComboBox.currentText() + self.ui.orientationComboBox.currentText()[0] +
-                                        '.qpt' )
+            qptFilePath = os.path.join(self.templateFileRoot,
+                                       self.ui.templateTypeComboBox.currentText(),
+                                       self.ui.sizeComboBox.currentText() + self.ui.orientationComboBox.currentText()[
+                                           0] +
+                                       '.qpt')
         except IndexError:
             qptFilePath = None
         return qptFilePath
@@ -250,66 +265,64 @@ class TemplateSelectorDialog(QtGui.QDialog):
                 if entry.lower() == 'default':
                     continue
                 self.ui.copyrightComboBox.addItem(entry)
-        
+
         defaultFilePath = os.path.join(copyrightFolder, 'default.txt')
-        if os.path.isfile( defaultFilePath ):
+        if os.path.isfile(defaultFilePath):
             with open(defaultFilePath, 'r') as defaultFile:
                 defautlCopyright = defaultFile.read().strip()
                 if defautlCopyright.lower().endswith('.txt'):
                     defautlCopyright = defautlCopyright[:-4]
-                self.ui.copyrightComboBox.setCurrentIndex( self.ui.copyrightComboBox.findText(defautlCopyright) )
-    
-    
+                self.ui.copyrightComboBox.setCurrentIndex(self.ui.copyrightComboBox.findText(defautlCopyright))
+
     def getTemplateFilePath(self):
         orientationLetter = self.ui.orientationComboBox.currentText()
         try:
             orientationLetter = orientationLetter[0]
         except IndexError:
             pass
-        qptFilePath = os.path.join( self.templateFileRoot,
-                                    self.ui.templateTypeComboBox.currentText(), 
-                                    self.ui.sizeComboBox.currentText() + orientationLetter + '.qpt' )
+        qptFilePath = os.path.join(self.templateFileRoot,
+                                   self.ui.templateTypeComboBox.currentText(),
+                                   self.ui.sizeComboBox.currentText() + orientationLetter + '.qpt')
         return qptFilePath
-        
+
     def getCopyrightText(self):
-        copyrightFilePath = os.path.join( self.templateFileRoot, 
-                                          self.ui.templateTypeComboBox.currentText(), 'Copyrights', 
-                                          self.ui.copyrightComboBox.currentText() + '.txt' )
+        copyrightFilePath = os.path.join(self.templateFileRoot,
+                                         self.ui.templateTypeComboBox.currentText(), 'Copyrights',
+                                         self.ui.copyrightComboBox.currentText() + '.txt')
         try:
             with open(copyrightFilePath, 'r') as copyrightFile:
                 copyrightText = copyrightFile.read().strip()
         except IOError:
             return ''
         return copyrightText
-    
+
     def openTemplate(self):
-        
+
         templateFilePath = self.getTemplateFilePath()
-        
+
         if not os.path.isfile(templateFilePath):
             QtGui.QMessageBox.critical(self.iface.mainWindow(), \
-                'Template Not Found', \
-                'The requested template (%s) is not currently available.' \
-                % templateFilePath)
+                                       'Template Not Found', \
+                                       'The requested template (%s) is not currently available.' \
+                                       % templateFilePath)
             return
-        
+
         # Load replaceable text
         projectTitle = self.ui.titleLineEdit.text()
         projectSubTitle = self.ui.subtitleLineEdit.text()
-        
+
         # Set copyright
-    
+
         copyrightIndex = self.ui.copyrightComboBox.currentIndex()
         self.replaceMap['copyright'] = self.getCopyrightText()
         self.replaceMap['title'] = projectTitle
         self.replaceMap['subtitle'] = projectSubTitle
-        
-        # Create a new Composer View with name equal to the project 
+
+        # Create a new Composer View with name equal to the project
         # title
         composerView = self.iface.createNewComposer(projectTitle)
-        
-        
-        # Load the template file, replacing any text we find in 
+
+        # Load the template file, replacing any text we find in
         # '[' and ']'
         try:
             tree = ET.parse(templateFilePath)
@@ -318,36 +331,37 @@ class TemplateSelectorDialog(QtGui.QDialog):
                 composerLabelElem = tree.find("//ComposerLabel/ComposerItem[@id='gridref']/..")
                 composerLabelElem.attrib['labelText'] = self.getPoiText()
             doc = QtXml.QDomDocument()
-            doc.setContent( ET.tostring(tree.getroot()) )
+            doc.setContent(ET.tostring(tree.getroot()))
         except IOError:
             # problem reading xml template
             QtGui.QMessageBox.critical(self.iface.mainWindow(), \
-                'Failed to Read Template', \
-                'The requested template (%s) could not be read.' \
-                % templateFilePath)
+                                       'Failed to Read Template', \
+                                       'The requested template (%s) could not be read.' \
+                                       % templateFilePath)
             return
         except:
             # Unexpected problem
             QtGui.QMessageBox.critical(self.iface.mainWindow(), \
-                'Failed to Read Template', \
-                'An unexpected error occured while reading (%s):\n\n%s' \
-                % (templateFilePath, traceback.format_exc()))
+                                       'Failed to Read Template', \
+                                       'An unexpected error occured while reading (%s):\n\n%s' \
+                                       % (templateFilePath, traceback.format_exc()))
             return
-        
+
         # Loaded the XML, replacing any replacables
         if not composerView.composition().loadFromTemplate(doc, self.replaceMap, True):
             QtGui.QMessageBox.critical(self.iface.mainWindow(), \
-                'Failed to Read Template', \
-                'loadFromTemplate returned False.')
+                                       'Failed to Read Template', \
+                                       'loadFromTemplate returned False.')
             return
-            
+
         # Update the ComposerMap cached images of all ComposerMaps
-        
-        i = 0
-        compMap = composerView.composition().getComposerMapById(i)
-        while(compMap):
+
+        for i in range(len(self.maps_properties)):
+            compMap = composerView.composition().getComposerMapById(i)
+            values = self.maps_properties[compMap.displayName()]
+            idx = values['idx']
             # Get the scale denominator (as a floating point)
-            scaleCombo = self.ui.scalesGridLayout.itemAtPosition(i, 3).widget()
+            scaleCombo = self.ui.scalesGridLayout.itemAtPosition(idx, 3).widget()
             assert scaleCombo != 0
             try:
                 scaleDenom = float(scaleCombo.currentText().replace(',', ''))
@@ -358,18 +372,16 @@ class TemplateSelectorDialog(QtGui.QDialog):
             # Set the scale
             cme = compMap.extent()
             canvasEx = self.iface.mapCanvas().extent()
-            p1 = QgsPoint( canvasEx.center().x()-(cme.width()/2.0),
-                           canvasEx.center().y()-(cme.height()/2.0) )
-            p2 = QgsPoint( canvasEx.center().x()+(cme.width()/2.0),
-                           canvasEx.center().y()+(cme.height()/2.0) )
+            p1 = QgsPoint(canvasEx.center().x() - (cme.width() / 2.0),
+                          canvasEx.center().y() - (cme.height() / 2.0))
+            p2 = QgsPoint(canvasEx.center().x() + (cme.width() / 2.0),
+                          canvasEx.center().y() + (cme.height() / 2.0))
             newCme = QgsRectangle(p1, p2)
-            compMap.setNewExtent( newCme )
+            compMap.setNewExtent(newCme)
             compMap.setNewScale(scaleDenom)
-            
+
             compMap.updateCachedImage()
-            i += 1
-            compMap = composerView.composition().getComposerMapById(i)
-        
+
         # Set scale
         resText = self.ui.suitableForComboBox.currentText()
         dpi = 0
@@ -379,11 +391,10 @@ class TemplateSelectorDialog(QtGui.QDialog):
             # Electronic
             dpi = 96
         composerView.composition().setPrintResolution(dpi)
-        
+
         # All done
         self.accept()
-        
-        
+
     def getPoiText(self):
         # Return grid references of POIs
         poiLayer = None
@@ -398,15 +409,14 @@ class TemplateSelectorDialog(QtGui.QDialog):
         fit = poiLayer.getFeatures()
         while fit.nextFeature(f):
             gridRef = xy_to_osgb(f.geometry().centroid().asPoint()[0], f.geometry().centroid().asPoint()[1], 10)
-            coordText = '%s\t%s\n' % ( f.attribute(self.ui.poiFieldComboBox.currentText()), gridRef )
+            coordText = '%s\t%s\n' % (f.attribute(self.ui.poiFieldComboBox.currentText()), gridRef)
             poiString += coordText
         return poiString
 
-
     def updateScaleText(self, newText):
         strippedtext = newText[4:]
-        self.ui.scaleLineEdit.setText( strippedtext )
-    
+        self.ui.scaleLineEdit.setText(strippedtext)
+
     def loadHelpPage(self):
         helpUrl = 'https://github.com/lutraconsulting/qgis-moor-tools-plugin/blob/master/README.md'
         QtGui.QDesktopServices.openUrl(QtCore.QUrl(helpUrl))
