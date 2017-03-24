@@ -24,6 +24,7 @@ from PyQt4 import QtCore, QtGui, QtXml
 from qgis.core import *
 from qgis.gui import *
 from ui_templateselector import Ui_TemplateSelector
+from math import ceil
 # create the dialog for zoom to point
 
 import os
@@ -68,9 +69,12 @@ class TemplateSelectorDialog(QtGui.QDialog):
         self.ui.autofit_btn.clicked.connect(self.autofit_map)
 
     def autofit_map(self):
-        map_extent = self.iface.mapCanvas().extent()
-        me_height = map_extent.height() * 1000
-        me_width = map_extent.width() * 1000
+        canvas = self.iface.mapCanvas()
+        units = canvas.mapUnits()
+        coef = 1 / 0.3048 if units == 1 else 1
+        map_extent = canvas.extent()
+        me_height = map_extent.height() * 1000 / coef
+        me_width = map_extent.width() * 1000 / coef
         for map_name, values in self.maps_properties.items():
             idx = values['idx']
             h = values['height']
@@ -78,8 +82,14 @@ class TemplateSelectorDialog(QtGui.QDialog):
             hscale = me_height / h
             wscale = me_width / w
             scale = hscale if hscale > wscale else wscale
+            scale_str = '{} (Autofit)'.format(ceil(scale))
             scaleCombo = self.ui.scalesGridLayout.itemAtPosition(idx, 3).widget()
-            scaleCombo.addItem(str(scale))
+            idx = scaleCombo.findText(scale_str)
+            if idx == -1:
+                scaleCombo.insertItem(0, scale_str)
+                scaleCombo.setCurrentIndex(0)
+            else:
+                scaleCombo.setCurrentIndex(idx)
 
     def onPoiLayerChanged(self):
         # Populate the list of available attribute names
