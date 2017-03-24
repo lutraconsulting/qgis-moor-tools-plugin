@@ -226,12 +226,13 @@ class TemplateSelectorDialog(QtGui.QDialog):
     def fetchComposerMapNames(self):
         # Return a list of the names of Composer Maps in the current .qpt file
         composerNames = []
+        self.maps_properties.clear()
         if self.ui.templateTypeComboBox.count() == 0:
             return composerNames
 
         root = ET.parse(self.getQptFilePath())
 
-        i = 1
+        i = 0
         for composerMapElement in root.findall("./Composition/ComposerMap"):
             try:
                 name = composerMapElement.find('ComposerItem').attrib['id']
@@ -241,7 +242,7 @@ class TemplateSelectorDialog(QtGui.QDialog):
                 name = 'Map %d' % i
             if len(name) == 0:
                 name = 'Map %d' % i
-            self.maps_properties[name] = {'width': float(width), 'height': float(height), 'idx': i - 1}
+            self.maps_properties[name] = {'width': float(width), 'height': float(height), 'idx': i}
             composerNames.append(name)
             i += 1
         return composerNames

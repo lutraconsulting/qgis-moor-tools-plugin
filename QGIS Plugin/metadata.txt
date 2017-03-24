@@ -24,7 +24,11 @@ about=Tools for simplifying and automating common tasks for national parks and o
 
 # Uncomment the following line and add your changelog entries:
 
-changelog=1.1.1 - Bug fixes:
+changelog=1.1.2 - Bug fixes and new features:
+ - Added Autofit button to adjust map scales to paper format
+ - Fixed mixed up combo boxes with scales
+ - Fixed example templates
+ <p>1.1.1 - Bug fixes:
  - Fixed plugin crashing when choosing current map canvas scale
  <p>1.1.0 - Bug fixes:
  - Added support for sub-title (template selector)
