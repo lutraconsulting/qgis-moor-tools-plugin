@@ -26,10 +26,12 @@ from ui_settings import Ui_Dialog
 
 import os
 
+PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULTS = os.path.join(PARENT_DIR, 'defaults.txt')
+
 
 class SettingsDialog(QtGui.QDialog):
-    
-    
+
     def __init__(self):
         
         QtGui.QDialog.__init__(self)
@@ -40,27 +42,30 @@ class SettingsDialog(QtGui.QDialog):
         self.settings = QtCore.QSettings()
 
         # Populate the values
-        v = self.settings.value('MoorTools/ProjectSelector/projectRoot', '', type=str)
-        self.ui.projectsFolderLineEdit.setText(v)
-        v = self.settings.value('MoorTools/TemplateSelector/templateRoot', '', type=str)
-        self.ui.templateRootLineEdit.setText(v)
-
+        with open(DEFAULTS) as paths:
+            projects = paths.readline().strip().split(':', 1)[-1]
+            templates = paths.readline().strip().split(':', 1)[-1]
+            self.ui.projectsFolderLineEdit.setText(projects)
+            self.ui.templateRootLineEdit.setText(templates)
 
     def browseForProjectRoot(self):
         startingDir = str(self.settings.value("MoorTools/ProjectSelector/projectRoot", os.path.expanduser("~"), type=str))
-        d = str( QtGui.QFileDialog.getExistingDirectory(None, 'Select Projects Folder', startingDir) )
-        if d <> os.sep and d.lower() <> 'c:\\' and d <> '':
+        d = str(QtGui.QFileDialog.getExistingDirectory(None, 'Select Projects Folder', startingDir))
+        if d != os.sep and d.lower() != 'c:\\' and d != '':
             self.ui.projectsFolderLineEdit.setText(d)
 
     def browseForTemplateRoot(self):
         startingDir = str(self.settings.value("MoorTools/TemplateSelector/templateRoot", os.path.expanduser("~"), type=str))
-        d = str( QtGui.QFileDialog.getExistingDirectory(None, 'Select Root of Template Folder Structure', startingDir) )
-        if d <> os.sep and d.lower() <> 'c:\\' and d <> '':
+        d = str(QtGui.QFileDialog.getExistingDirectory(None, 'Select Root of Template Folder Structure', startingDir))
+        if d != os.sep and d.lower() != 'c:\\' and d != '':
             self.ui.templateRootLineEdit.setText(d)
 
     def accept(self):
-        d = self.ui.projectsFolderLineEdit.text()
-        self.settings.setValue("MoorTools/ProjectSelector/projectRoot", d)
-        d = self.ui.templateRootLineEdit.text()
-        self.settings.setValue("MoorTools/TemplateSelector/templateRoot", d)
+        projects = self.ui.projectsFolderLineEdit.text()
+        self.settings.setValue("MoorTools/ProjectSelector/projectRoot", projects)
+        templates = self.ui.templateRootLineEdit.text()
+        self.settings.setValue("MoorTools/TemplateSelector/templateRoot", templates)
+        with open(DEFAULTS, 'w') as paths:
+            paths.write('projects:{}\n'.format(projects))
+            paths.write('templates:{}\n'.format(templates))
         QtGui.QDialog.accept(self)

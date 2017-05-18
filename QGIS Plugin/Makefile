@@ -35,7 +35,7 @@ PLUGINNAME = projectselector
 
 PY_FILES = projectselector.py projectselectordialog.py __init__.py
 
-EXTRAS = icon.png metadata.txt
+EXTRAS = icon.png metadata.txt defaults.txt
 
 UI_FILES = ui_projectselector.py
 
