@@ -65,8 +65,20 @@ class TemplateSelectorDialog(QtGui.QDialog):
         self.plugin_dir = os.path.dirname(__file__)
 
         # Replacement map
+        self.ui.suitableForComboBox.addItem('<custom>')
         self.replaceMap = {'username': os.environ['username']}
         self.ui.autofit_btn.clicked.connect(self.autofit_map)
+        self.ui.suitableForComboBox.currentIndexChanged.connect(self.specify_dpi)
+        self.ui.suitableForComboBox.editTextChanged.connect(self.text_changed)
+
+    def specify_dpi(self, idx):
+        if idx == 2:
+            self.ui.suitableForComboBox.setEditable(True)
+        else:
+            self.ui.suitableForComboBox.setEditable(False)
+
+    def text_changed(self, txt):
+        self.ui.suitableForComboBox.setItemText(self.ui.suitableForComboBox.currentIndex(), txt)
 
     def autofit_map(self):
         canvas = self.iface.mapCanvas()
@@ -394,13 +406,19 @@ class TemplateSelectorDialog(QtGui.QDialog):
             compMap.updateCachedImage()
 
         # Set scale
-        resText = self.ui.suitableForComboBox.currentText()
-        dpi = 0
-        if resText.startswith('Paper'):
+        cur_idx = self.ui.suitableForComboBox.currentIndex()
+        if cur_idx == 0:
+            # Paper
             dpi = 300
-        else:
+        elif cur_idx == 1:
             # Electronic
             dpi = 96
+        else:
+            res_text = self.ui.suitableForComboBox.currentText()
+            try:
+                dpi = int(res_text)
+            except TypeError:
+                dpi = 96
         composerView.composition().setPrintResolution(dpi)
 
         # All done

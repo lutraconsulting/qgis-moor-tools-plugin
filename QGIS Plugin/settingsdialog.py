@@ -20,7 +20,7 @@
  ***************************************************************************/
 """
 
-from PyQt4 import QtCore, QtGui, QtXml
+from PyQt4 import QtCore, QtGui
 from ui_settings import Ui_Dialog
 # create the dialog for zoom to point
 

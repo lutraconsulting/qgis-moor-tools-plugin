@@ -19,12 +19,12 @@
  *                                                                         *
  ***************************************************************************/
 """
-import collections
 import os
 
 from PyQt4 import QtCore, QtGui
 from ui_projectselector import Ui_ProjectSelector
 # create the dialog for zoom to point
+
 
 class ProjectSelectorException(Exception):
     pass
