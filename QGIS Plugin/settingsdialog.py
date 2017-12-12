@@ -47,6 +47,8 @@ class SettingsDialog(QtGui.QDialog):
             templates = paths.readline().strip().split(':', 1)[-1]
             self.ui.projectsFolderLineEdit.setText(projects)
             self.ui.templateRootLineEdit.setText(templates)
+        project_selector_enabled = self.settings.value("MoorTools/ProjectSelector/isEnabled", True, type=bool)
+        self.ui.projectSelectorEnabledCheckBox.setChecked(project_selector_enabled)
 
     def browseForProjectRoot(self):
         startingDir = str(self.settings.value("MoorTools/ProjectSelector/projectRoot", os.path.expanduser("~"), type=str))
@@ -68,4 +70,6 @@ class SettingsDialog(QtGui.QDialog):
         with open(DEFAULTS, 'w') as paths:
             paths.write('projects:{}\n'.format(projects))
             paths.write('templates:{}\n'.format(templates))
+        project_selector_enabled = self.ui.projectSelectorEnabledCheckBox.isChecked()
+        self.settings.setValue("MoorTools/ProjectSelector/isEnabled", project_selector_enabled)
         QtGui.QDialog.accept(self)

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>428</width>
-    <height>107</height>
+    <height>156</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,22 +16,15 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="2">
-      <widget class="QPushButton" name="projectsFolderPushButton">
+     <item row="0" column="0">
+      <widget class="QLabel" name="projectsFolderLabel">
        <property name="text">
-        <string>Browse</string>
+        <string>Projects Folder</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="templateRootLabel">
-       <property name="text">
-        <string>Folder Containing Templates</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="templateRootLineEdit"/>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="projectsFolderLineEdit"/>
      </item>
      <item row="1" column="2">
       <widget class="QPushButton" name="templateRootPushButton">
@@ -40,13 +33,33 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="projectsFolderLineEdit"/>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="projectsFolderLabel">
+     <item row="0" column="2">
+      <widget class="QPushButton" name="projectsFolderPushButton">
        <property name="text">
-        <string>Projects Folder</string>
+        <string>Browse</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="templateRootLineEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="templateRootLabel">
+       <property name="text">
+        <string>Folder Containing Templates</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="3">
+      <widget class="QCheckBox" name="projectSelectorEnabledCheckBox">
+       <property name="text">
+        <string>Show project selector on QGIS startup</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

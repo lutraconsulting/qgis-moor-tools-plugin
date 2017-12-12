@@ -6,7 +6,7 @@ Tools for simplifying and automating common tasks for national parks and other p
 
 Although fully functional, this plugin has not yet been polished for release to the official QGIS plugin repository.
 
-Please note this plugin has been developed for very specific use cases and as such may require further work to make it more generic to suit users' wider requirements. Please feel free to create [GitHub *issues*](http://fixme.com) for reporting any bugs, queries or feature requests.
+Please note this plugin has been developed for very specific use cases and as such may require further work to make it more generic to suit users' wider requirements. Please feel free to create [GitHub *issues*](https://github.com/lutraconsulting/qgis-moor-tools-plugin/issues) for reporting any bugs, queries or feature requests.
 
 ## Configuration
 
@@ -61,6 +61,10 @@ In the example above the _Planning Application_ template is available as A4 (Lan
 In this case the optional _images_ folder contains any logos or other images referenced by the associated .qpt files. 
 
 The optional _Copyrights_ folder contains the copyright text(s) available when using the _Planning Application_ composer template. _default.txt_ can optionally be used to specify the default copyright text for the template. This is configured as described above for the _Project Selector_.
+
+### Show on QGIS startup (Project Selector)
+
+Whether or not to show the project selector dialog on QGIS startup - note that this dialog does not appear if QGIS is invoked directly on a project (.qgs) file.
 
 ### Customising the Help URL
 
