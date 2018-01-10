@@ -20,10 +20,10 @@
  ***************************************************************************/
 """
 import os
-
-from PyQt4 import QtCore, QtGui
-from ui_projectselector import Ui_ProjectSelector
+from PyQt4 import QtCore, QtGui, uic
 # create the dialog for zoom to point
+
+ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ui_projectselector.ui')
 
 
 class ProjectSelectorException(Exception):
@@ -35,10 +35,10 @@ class ProjectSelectorDialog(QtGui.QDialog):
     def __init__(self, iface):
         
         self.iface = iface
+
         QtGui.QDialog.__init__(self)
         # Set up the user interface from Designer.
-        self.ui = Ui_ProjectSelector()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi(ui_file, self)
         self.plugin_dir = os.path.dirname(__file__)
         
         # import pydevd; pydevd.settrace()

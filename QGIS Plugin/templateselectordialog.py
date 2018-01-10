@@ -20,10 +20,9 @@
  ***************************************************************************/
 """
 
-from PyQt4 import QtCore, QtGui, QtXml
+from PyQt4 import QtCore, QtGui, QtXml, uic
 from qgis.core import *
 from qgis.gui import *
-from ui_templateselector import Ui_TemplateSelector
 from math import ceil
 # create the dialog for zoom to point
 
@@ -32,6 +31,8 @@ import traceback
 import locale
 from xml.etree import ElementTree as ET
 from xy_to_osgb import xy_to_osgb
+
+ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ui_templateselector.ui')
 
 
 class TemplateSelectorException(Exception):
@@ -49,11 +50,11 @@ class TemplateSelectorDialog(QtGui.QDialog):
         self.iface = iface
         QtGui.QDialog.__init__(self)
         # Set up the user interface from Designer.
-        self.ui = Ui_TemplateSelector()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi(ui_file, self)
 
         # Set up the list of templates
         s = QtCore.QSettings()
+        self.identifiable_only = s.value("MoorTools/ProjectSelector/identifiableOnly", True, type=bool)
         self.templateFileRoot = s.value("MoorTools/TemplateSelector/templateRoot", '', type=str)
         if len(self.templateFileRoot) == 0 or not os.path.isdir(self.templateFileRoot):
             raise TemplateSelectorException('\'%s\' is not a valid template file root folder.' % self.templateFileRoot)
@@ -259,6 +260,24 @@ class TemplateSelectorDialog(QtGui.QDialog):
             i += 1
         return composerNames
 
+    def set_legend_compositions(self, composerView):
+        non_ident = QgsProject.instance().nonIdentifiableLayers()
+        self.legend_tree_root = QgsLayerTreeGroup()
+        layer_nodes = []
+
+        for lyr in self.iface.mapCanvas().layers():
+            if lyr.id() not in non_ident:
+                layer_nodes.append(QgsLayerTreeLayer(lyr))
+
+        self.legend_tree_root.insertChildNodes(-1, layer_nodes)
+        # update the model
+        for item in composerView.composition().items():
+            if not isinstance(item, QgsComposerLegend):
+                continue
+            legend_model = item.modelV2()
+            legend_model.setRootGroup(self.legend_tree_root)
+            item.synchronizeWithModel()
+
     def getQptFilePath(self):
         try:
             qptFilePath = os.path.join(self.templateFileRoot,
@@ -378,7 +397,8 @@ class TemplateSelectorDialog(QtGui.QDialog):
             return
 
         # Update the ComposerMap cached images of all ComposerMaps
-
+        if self.identifiable_only:
+            self.set_legend_compositions(composerView)
         for i in range(len(self.maps_properties)):
             compMap = composerView.composition().getComposerMapById(i)
             values = self.maps_properties[compMap.displayName()]
