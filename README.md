@@ -6,7 +6,7 @@ Tools for simplifying and automating common tasks for national parks and other p
 
 Although fully functional, this plugin has not yet been polished for release to the official QGIS plugin repository.
 
-You can install the latest version of the plugin from Lutra Consulting [public repository](https://qgis.lutraconsulting.co.uk/lutraconsulting/plugins.xml)public repository:
+You can install the latest version of the plugin from Lutra Consulting [public repository](https://qgis.lutraconsulting.co.uk/lutraconsulting/plugins.xml):
 
 https://qgis.lutraconsulting.co.uk/lutraconsulting/plugins.xml
 
