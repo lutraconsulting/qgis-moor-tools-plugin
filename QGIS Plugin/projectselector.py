@@ -20,6 +20,7 @@
  ***************************************************************************/
 """
 # Import the PyQt and QGIS libraries
+import os.path
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -29,10 +30,9 @@ import resources_rc
 from projectselectordialog import *
 from templateselectordialog import *
 from settingsdialog import *
-import os.path
 
 
-class ProjectSelector:
+class ProjectSelector(object):
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -54,12 +54,10 @@ class ProjectSelector:
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.projectSelectorAction = QAction(
-            QIcon(":/plugins/projectselector/icon.png"),
-            u"Project Selector", self.iface.mainWindow())
-        self.templateSelectorAction = QAction(
-            QIcon(":/plugins/projectselector/template_selector_icon.png"),
-            u"Template Selector", self.iface.mainWindow())
+        self.projectSelectorAction = QAction(QIcon(":/plugins/projectselector/icon.png"),
+                                            u"Project Selector", self.iface.mainWindow())
+        self.templateSelectorAction = QAction(QIcon(":/plugins/projectselector/template_selector_icon.png"),
+                                              u"Template Selector", self.iface.mainWindow())
         self.configureAction = QAction(u"Configure Moor Tools", self.iface.mainWindow())
         # connect the action to the run method
         self.projectSelectorAction.triggered.connect(self.selectProject)
@@ -74,7 +72,7 @@ class ProjectSelector:
         self.iface.addPluginToMenu(u"&Moor Tools", self.configureAction)
         
         # Connect the dialog to QGIS' initializationCompleted() signal
-        QObject.connect( self.iface, SIGNAL("initializationCompleted()"), self.onInitializationCompleted )
+        QObject.connect(self.iface, SIGNAL("initializationCompleted()"), self.onInitializationCompleted )
 
     def unload(self):
         # Disconnect the dialog to QGIS' initializationCompleted() signal

@@ -20,14 +20,14 @@
  ***************************************************************************/
 """
 
-from PyQt4 import QtCore, QtGui
-from ui_settings import Ui_Dialog
-# create the dialog for zoom to point
-
 import os
+from PyQt4 import QtCore, QtGui, uic
+# create the dialog for zoom to point
 
 PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULTS = os.path.join(PARENT_DIR, 'defaults.txt')
+
+ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ui_settings.ui')
 
 
 class SettingsDialog(QtGui.QDialog):
@@ -36,8 +36,7 @@ class SettingsDialog(QtGui.QDialog):
         
         QtGui.QDialog.__init__(self)
         # Set up the user interface from Designer.
-        self.ui = Ui_Dialog()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi(ui_file, self)
 
         self.settings = QtCore.QSettings()
 
@@ -48,7 +47,9 @@ class SettingsDialog(QtGui.QDialog):
             self.ui.projectsFolderLineEdit.setText(projects)
             self.ui.templateRootLineEdit.setText(templates)
         project_selector_enabled = self.settings.value("MoorTools/ProjectSelector/isEnabled", True, type=bool)
+        identifiable_only = self.settings.value("MoorTools/ProjectSelector/identifiableOnly", True, type=bool)
         self.ui.projectSelectorEnabledCheckBox.setChecked(project_selector_enabled)
+        self.ui.identifiableOnly.setChecked(identifiable_only)
 
     def browseForProjectRoot(self):
         startingDir = str(self.settings.value("MoorTools/ProjectSelector/projectRoot", os.path.expanduser("~"), type=str))
@@ -78,4 +79,6 @@ class SettingsDialog(QtGui.QDialog):
                                       % DEFAULTS )
         project_selector_enabled = self.ui.projectSelectorEnabledCheckBox.isChecked()
         self.settings.setValue("MoorTools/ProjectSelector/isEnabled", project_selector_enabled)
+        identifiable_only = self.ui.identifiableOnly.isChecked()
+        self.settings.setValue("MoorTools/ProjectSelector/identifiableOnly", identifiable_only)
         QtGui.QDialog.accept(self)
