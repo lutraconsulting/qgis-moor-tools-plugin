@@ -398,7 +398,13 @@ class TemplateSelectorDialog(QtGui.QDialog):
 
         # Update the ComposerMap cached images of all ComposerMaps
         if self.identifiable_only:
-            self.set_legend_compositions(composerView)
+            try:
+                self.set_legend_compositions(composerView)
+            except AttributeError:
+                self.iface.messageBar().pushMessage(
+                    'MoorTools',
+                    'Filtering by identifiable layers ignored - functionality available for QGIS 2.18 and higher.',
+                    level=0)
         for i in range(len(self.maps_properties)):
             compMap = composerView.composition().getComposerMapById(i)
             values = self.maps_properties[compMap.displayName()]

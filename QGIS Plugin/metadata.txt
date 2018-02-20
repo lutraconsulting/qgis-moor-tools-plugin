@@ -13,7 +13,7 @@ name=Project Selector
 qgisMinimumVersion=2.0
 qgisMaximumVersion=2.99
 description=Tool for selecting pre-defined QGIS projects.
-version=1.2.1
+version=1.2.2
 author=Dartmoor National Park Authority
 email=gi@dartmoor.gov.uk
 about=Tools for simplifying and automating common tasks for national parks and other protected areas. Catchy name courtesy of Dartmoor National Park, UK.
@@ -24,7 +24,10 @@ about=Tools for simplifying and automating common tasks for national parks and o
 
 # Uncomment the following line and add your changelog entries:
 
-changelog=1.2.1 - New features:
+changelog=1.2.2 - New features:
+ - Added noticing for functionality unavailable in QGIS versions lower than 2.18
+ - Fixed issue #9
+<p>changelog=1.2.1 - New features:
  - Added checkbox for using only identifiable layers in legend compositions
 <p>1.2.0 - New features:
  - Added ability to enable / disable project selector through settings

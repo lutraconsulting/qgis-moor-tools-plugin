@@ -23,9 +23,6 @@
 import os.path
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from qgis.core import *
-# Initialize Qt resources from file resources.py
-import resources_rc
 # Import the code for the dialog
 from projectselectordialog import *
 from templateselectordialog import *
@@ -50,13 +47,13 @@ class ProjectSelector(object):
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        self.first_project_selection = True
-
     def initGui(self):
         # Create action that will start plugin configuration
-        self.projectSelectorAction = QAction(QIcon(":/plugins/projectselector/icon.png"),
+        proj_icon_path = os.path.join(self.plugin_dir, 'icon.png')
+        temp_icon_path = os.path.join(self.plugin_dir, 'template_selector_icon.png')
+        self.projectSelectorAction = QAction(QIcon(proj_icon_path),
                                             u"Project Selector", self.iface.mainWindow())
-        self.templateSelectorAction = QAction(QIcon(":/plugins/projectselector/template_selector_icon.png"),
+        self.templateSelectorAction = QAction(QIcon(temp_icon_path),
                                               u"Template Selector", self.iface.mainWindow())
         self.configureAction = QAction(u"Configure Moor Tools", self.iface.mainWindow())
         # connect the action to the run method
@@ -72,11 +69,11 @@ class ProjectSelector(object):
         self.iface.addPluginToMenu(u"&Moor Tools", self.configureAction)
         
         # Connect the dialog to QGIS' initializationCompleted() signal
-        QObject.connect(self.iface, SIGNAL("initializationCompleted()"), self.onInitializationCompleted )
+        self.iface.initializationCompleted.connect(self.onInitializationCompleted)
 
     def unload(self):
         # Disconnect the dialog to QGIS' initializationCompleted() signal
-        QObject.disconnect( self.iface, SIGNAL("initializationCompleted()"), self.onInitializationCompleted )
+        self.iface.initializationCompleted.disconnect(self.onInitializationCompleted)
         # Remove the plugin menu item and icon
         self.iface.removePluginMenu(u"&Moor Tools", self.configureAction)
         self.iface.removePluginMenu(u"&Moor Tools", self.projectSelectorAction)
@@ -94,11 +91,6 @@ class ProjectSelector(object):
 
     # run method that performs all the real work
     def selectProject(self):
-        if QgsProject.instance().fileName() and self.first_project_selection:
-            # Do not show the project selection if we initialised QGIS by opening a project already
-            self.first_project_selection = False
-            return
-        self.first_project_selection = False
         try:
             projectSelectorDlg = ProjectSelectorDialog(self.iface)
         except ProjectSelectorException:
