@@ -68,9 +68,15 @@ class SettingsDialog(QtGui.QDialog):
         self.settings.setValue("MoorTools/ProjectSelector/projectRoot", projects)
         templates = self.ui.templateRootLineEdit.text()
         self.settings.setValue("MoorTools/TemplateSelector/templateRoot", templates)
-        with open(DEFAULTS, 'w') as paths:
-            paths.write('projects:{}\n'.format(projects))
-            paths.write('templates:{}\n'.format(templates))
+        try:
+            with open(DEFAULTS, 'w') as paths:
+                paths.write('projects:{}\n'.format(projects))
+                paths.write('templates:{}\n'.format(templates))
+        except IOError:
+            QtGui.QMessageBox.warning(None, \
+                                      'Could not save folders', \
+                                      '%s could not be opened for writing, please ensure you have permission to edit this file.' \
+                                      % DEFAULTS )
         project_selector_enabled = self.ui.projectSelectorEnabledCheckBox.isChecked()
         self.settings.setValue("MoorTools/ProjectSelector/isEnabled", project_selector_enabled)
         identifiable_only = self.ui.identifiableOnly.isChecked()

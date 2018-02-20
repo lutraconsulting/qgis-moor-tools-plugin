@@ -24,10 +24,9 @@ about=Tools for simplifying and automating common tasks for national parks and o
 
 # Uncomment the following line and add your changelog entries:
 
-changelog=1.2.2 - New features:
- - Added noticing for functionality unavailable in QGIS versions lower than 2.18
- - Fixed issue #9
-<p>changelog=1.2.1 - New features:
+changelog=1.2.2 - Bug fixes:
+ - Enable / disable project selector setting now saved regardless of permissions on default paths file
+<p>1.2.1 - New features:
  - Added checkbox for using only identifiable layers in legend compositions
 <p>1.2.0 - New features:
  - Added ability to enable / disable project selector through settings
