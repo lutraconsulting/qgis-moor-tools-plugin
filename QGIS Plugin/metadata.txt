@@ -24,7 +24,7 @@ about=Tools for simplifying and automating common tasks for national parks and o
 
 # Uncomment the following line and add your changelog entries:
 
-changelog=1.2.3 - New features:
+changelog=1.2.3 - Bug fixes:
  - Added noticing for functionality unavailable in QGIS versions lower than 2.18
  - Fixed issue #9
 <p>1.2.2 - Bug fixes:
