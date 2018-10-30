@@ -158,8 +158,9 @@ class TemplateSelectorDialog(QtGui.QDialog):
             if not os.path.isfile(os.path.join(templateFolder, entry)) or not entry.lower().endswith('.qpt'):
                 continue
             paperSize = entry[:2]
-            if paperSize in self.supportedPaperSizes and not paperSize in self.paperSizesPresent:
+            if paperSize in self.supportedPaperSizes and paperSize not in self.paperSizesPresent:
                 self.paperSizesPresent.append(paperSize)
+        self.paperSizesPresent.sort(reverse=True)
 
     def onPaperSizeChanged(self, newIdx=None):
         # Determine what orientations are available
@@ -417,6 +418,7 @@ class TemplateSelectorDialog(QtGui.QDialog):
             except ValueError:
                 cleanedScaleString = scaleCombo.currentText().split(' (')[0]
                 cleanedScaleString = cleanedScaleString.replace(')', '')
+                cleanedScaleString = cleanedScaleString.replace(u'\u00A0', '')
                 scaleDenom = float(cleanedScaleString.replace(',', '').replace(' ', ''))
             # Set the scale
             cme = compMap.extent()
