@@ -21,12 +21,13 @@
 """
 # Import the PyQt and QGIS libraries
 import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtGui import QIcon
 # Import the code for the dialog
-from projectselectordialog import *
-from templateselectordialog import *
-from settingsdialog import *
+from .projectselectordialog import *
+from .templateselectordialog import *
+from .settingsdialog import *
 
 
 class ProjectSelector(object):
@@ -94,11 +95,11 @@ class ProjectSelector(object):
         try:
             projectSelectorDlg = ProjectSelectorDialog(self.iface)
         except ProjectSelectorException:
-            reply = QtGui.QMessageBox.question(self.iface.mainWindow(),
+            reply = QMessageBox.question(self.iface.mainWindow(),
                 'Moor Tools (Project Selector): No Projects Folder Specified',
                 'It looks like you haven\'t yet specified the folder containing your QGIS start-up projects. Would you like to do that now?',
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-            if reply == QtGui.QMessageBox.No:
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if reply == QMessageBox.No:
                 return
             self.configure()
             return # The user will need to invoke the action again
@@ -117,8 +118,8 @@ class ProjectSelector(object):
         try:
             templateSelectorDlg = TemplateSelectorDialog(self.iface)
         except TemplateSelectorException:
-            reply = QtGui.QMessageBox.question(self.iface.mainWindow(), 'Moor Tools (Template Selector): No Template Folder Specified', 'It looks like you haven\'t yet specified the folder containing your templates. Would you like to do that now?', QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-            if reply == QtGui.QMessageBox.No:
+            reply = QMessageBox.question(self.iface.mainWindow(), 'Moor Tools (Template Selector): No Template Folder Specified', 'It looks like you haven\'t yet specified the folder containing your templates. Would you like to do that now?', QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if reply == QMessageBox.No:
                 return
             self.configure()
             return # The user will need to invoke the action again

@@ -20,7 +20,8 @@
  ***************************************************************************/
 """
 import os
-from PyQt4 import QtCore, QtGui, uic
+from qgis.PyQt import QtCore, uic
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 # create the dialog for zoom to point
 
 ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ui_projectselector.ui')
@@ -30,13 +31,13 @@ class ProjectSelectorException(Exception):
     pass
 
 
-class ProjectSelectorDialog(QtGui.QDialog):
+class ProjectSelectorDialog(QDialog):
     
     def __init__(self, iface):
         
         self.iface = iface
 
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         # Set up the user interface from Designer.
         self.ui = uic.loadUi(ui_file, self)
         self.plugin_dir = os.path.dirname(__file__)
@@ -44,7 +45,7 @@ class ProjectSelectorDialog(QtGui.QDialog):
         # import pydevd; pydevd.settrace()
         
         # Disable OK button until we are sure we have at least one project
-        self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         # Set up the list of templates
         self.settings = QtCore.QSettings()
@@ -95,7 +96,7 @@ class ProjectSelectorDialog(QtGui.QDialog):
         if projectGroupname == '':
             return
         self.ui.selectedProjectListWidget.clear()
-        self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         groupFolderPath = os.path.join(self.projectFileRoot, projectGroupname)
         for entry in os.listdir(groupFolderPath):
             projectFilePath = os.path.join(groupFolderPath, entry)
@@ -104,7 +105,7 @@ class ProjectSelectorDialog(QtGui.QDialog):
             if entry.lower().endswith('.qgs'):
                 prettyName, dummy = os.path.splitext(entry)
                 self.ui.selectedProjectListWidget.addItem(prettyName)
-                self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+                self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         
         # Set the default project (if exists)
         defP = self.getDefaultProject(groupFolderPath)

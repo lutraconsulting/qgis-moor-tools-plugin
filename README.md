@@ -83,11 +83,12 @@ This section describes how to create effective composer templates.
 
 _Template Selector_ supports automatic replacement of strings in addition to those already supported by QGIS. The following strings will automatically be replaced within composer templates:
 
-- [username] : the user's username (e.g. %USERNAME%)
+- [username] : the user's username (e.g. %USERNAME%), specified as environment variable
 - [title] : The _Title_ specified by the user in the above dialog
 - [subtitle] : The _Sub-title_ specified by the user in the above dialog
-- [copyright] : The content of the selected copyright file 
+- [copyright] : The content of the selected copyright file
 
+NOTE: If you update from QGIS 2 print templates, in QGIS 3 it is necessary to set up 'id' fields of the items above as 'author', 'title', 'subtitle', 'copyright', respectively.
 ### Multiple Composer Maps    
 
 Templates with multiple composer maps are supported. Composer maps are identified by their _Item ID_ property wherever present and their scales can be set independently.

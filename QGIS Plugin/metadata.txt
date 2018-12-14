@@ -10,8 +10,8 @@
 
 [general]
 name=Project Selector
-qgisMinimumVersion=2.0
-qgisMaximumVersion=2.99
+qgisMinimumVersion=3.0
+qgisMaximumVersion=3.99
 description=Tool for selecting pre-defined QGIS projects.
 version=1.2.4
 author=Dartmoor National Park Authority
@@ -23,7 +23,8 @@ about=Tools for simplifying and automating common tasks for national parks and o
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=1.2.4 - Bug fixes:
+changelog=1.3 Migration to QGIS 3
+<p>1.2.4 - Bug fixes:
  - Fixed issue #10
 <p>1.2.3 - Bug fixes:
  - Added noticing for functionality unavailable in QGIS versions lower than 2.18

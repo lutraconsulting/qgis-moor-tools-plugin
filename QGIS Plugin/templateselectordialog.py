@@ -20,17 +20,29 @@
  ***************************************************************************/
 """
 
-from PyQt4 import QtCore, QtGui, QtXml, uic
-from qgis.core import *
-from qgis.gui import *
-from math import ceil
-# create the dialog for zoom to point
-
 import os
 import traceback
 import locale
+from qgis.PyQt import QtGui, uic
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QSpacerItem, QComboBox, QLabel, QSizePolicy, QMessageBox
+from qgis.PyQt.QtXml import QDomDocument
+from qgis.core import (
+    QgsPrintLayout,
+    QgsMapLayer,
+    QgsProject,
+    QgsLayerTree,
+    QgsLayerTreeLayer,
+    QgsLayoutItemLegend,
+    QgsLayoutItemMap,
+    QgsReadWriteContext,
+    QgsFeature,
+    QgsPointXY,
+    QgsRectangle
+)
+from qgis.gui import QtCore
+from math import ceil
 from xml.etree import ElementTree as ET
-from xy_to_osgb import xy_to_osgb
+from .xy_to_osgb import xy_to_osgb
 
 ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ui_templateselector.ui')
 
@@ -39,7 +51,7 @@ class TemplateSelectorException(Exception):
     pass
 
 
-class TemplateSelectorDialog(QtGui.QDialog):
+class TemplateSelectorDialog(QDialog):
     def __init__(self, iface):
 
         self.supportedPaperSizes = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8']  # ISO A series
@@ -48,7 +60,7 @@ class TemplateSelectorDialog(QtGui.QDialog):
         self.maps_properties = {}
 
         self.iface = iface
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         # Set up the user interface from Designer.
         self.ui = uic.loadUi(ui_file, self)
 
@@ -67,10 +79,14 @@ class TemplateSelectorDialog(QtGui.QDialog):
 
         # Replacement map
         self.ui.suitableForComboBox.addItem('<custom>')
-        self.replaceMap = {'username': os.environ['username']}
+        self.user = os.environ.get('username', '[user]')
+        self.replaceMap = {
+            'author': "Compiled by {} on [%concat(day($now ),'/',month($now),'/',year($now))%]".format(self.user)
+        }
         self.ui.autofit_btn.clicked.connect(self.autofit_map)
         self.ui.suitableForComboBox.currentIndexChanged.connect(self.specify_dpi)
         self.ui.suitableForComboBox.editTextChanged.connect(self.text_changed)
+        self.ui.poiLayerComboBox.currentIndexChanged.connect(self.onPoiLayerChanged)
 
     def specify_dpi(self, idx):
         if idx == 2:
@@ -88,7 +104,7 @@ class TemplateSelectorDialog(QtGui.QDialog):
         map_extent = canvas.extent()
         me_height = map_extent.height() * 1000 / coef
         me_width = map_extent.width() * 1000 / coef
-        for map_name, values in self.maps_properties.items():
+        for map_name, values in list(self.maps_properties.items()):
             idx = values['idx']
             h = values['height']
             w = values['width']
@@ -117,11 +133,9 @@ class TemplateSelectorDialog(QtGui.QDialog):
     def populatePoiLayers(self):
         # Called once on init
         for layer in self.iface.mapCanvas().layers():
-            if layer.type() != QgsMapLayer.VectorLayer:
-                continue
-            if layer.geometryType() != QGis.Point:
-                continue
-            self.ui.poiLayerComboBox.addItem(layer.name())
+            # Point type is 0
+            if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == 0:
+                self.ui.poiLayerComboBox.addItem(layer.name())
 
     def populateTemplateTypes(self):
         self.ui.templateTypeComboBox.blockSignals(True)
@@ -190,9 +204,9 @@ class TemplateSelectorDialog(QtGui.QDialog):
         # Check it exists and update the OK button appropriately
         qptFilePath = self.getQptFilePath()
         if qptFilePath is None or not os.path.isfile(qptFilePath):
-            self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+            self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         else:
-            self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+            self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
     def populateScaleChoices(self):
 
@@ -200,27 +214,27 @@ class TemplateSelectorDialog(QtGui.QDialog):
         layout of scales for the various Composer Maps """
 
         # Clear previous
-        for i in reversed(range(self.ui.scalesGridLayout.count())):
+        for i in reversed(list(range(self.ui.scalesGridLayout.count()))):
             item = self.ui.scalesGridLayout.itemAt(i)
-            if type(item) == QtGui.QSpacerItem:
+            if type(item) == QSpacerItem:
                 self.ui.scalesGridLayout.removeItem(item)
             else:
                 item.widget().setParent(None)
 
         composerMapNames = self.fetchComposerMapNames()
-        i = 0
+        i = 1
         for composerMapName in composerMapNames:
 
-            label_1 = QtGui.QLabel(composerMapName)
+            label_1 = QLabel(composerMapName)
             self.ui.scalesGridLayout.addWidget(label_1, i, 0)
 
-            spacer = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+            spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
             self.ui.scalesGridLayout.addItem(spacer, i, 1)
 
-            label_2 = QtGui.QLabel('1:')
+            label_2 = QLabel('1:')
             self.ui.scalesGridLayout.addWidget(label_2, i, 2)
 
-            comboBox = QtGui.QComboBox()
+            comboBox = QComboBox()
             comboBox.setEditable(True)
             # Add current canvas scale
             locale.setlocale(locale.LC_ALL, '')
@@ -234,8 +248,8 @@ class TemplateSelectorDialog(QtGui.QDialog):
             i += 1
 
         if len(composerMapNames) == 0:
-            label = QtGui.QLabel('(No Composer Maps Found)')
-            self.ui.scalesGridLayout.addWidget(label, 0, 0)
+            label = QLabel('No layout map elements found. Limited usability.')
+            self.ui.scalesGridLayout.addWidget(label, i, 1)
 
     def fetchComposerMapNames(self):
         # Return a list of the names of Composer Maps in the current .qpt file
@@ -246,24 +260,23 @@ class TemplateSelectorDialog(QtGui.QDialog):
 
         root = ET.parse(self.getQptFilePath())
 
-        i = 0
-        for composerMapElement in root.findall("./Composition/ComposerMap"):
+        i = 1
+        for composerMapElement in root.findall("./LayoutItem[@mapRotation]"):
             try:
-                name = composerMapElement.find('ComposerItem').attrib['id']
-                width = composerMapElement.find('ComposerItem').attrib['width']
-                height = composerMapElement.find('ComposerItem').attrib['height']
+                name = composerMapElement.attrib['id']
+                size = composerMapElement.attrib['size'].split(',')
             except ValueError:
                 name = 'Map %d' % i
             if len(name) == 0:
                 name = 'Map %d' % i
-            self.maps_properties[name] = {'width': float(width), 'height': float(height), 'idx': i}
+            self.maps_properties[name] = {'width': float(size[0]), 'height': float(size[1]), 'idx': i}
             composerNames.append(name)
             i += 1
         return composerNames
 
-    def set_legend_compositions(self, composerView):
+    def set_legend_compositions(self, print_layout):
         non_ident = QgsProject.instance().nonIdentifiableLayers()
-        self.legend_tree_root = QgsLayerTreeGroup()
+        self.legend_tree_root = QgsLayerTree()
         layer_nodes = []
 
         for lyr in self.iface.mapCanvas().layers():
@@ -272,12 +285,11 @@ class TemplateSelectorDialog(QtGui.QDialog):
 
         self.legend_tree_root.insertChildNodes(-1, layer_nodes)
         # update the model
-        for item in composerView.composition().items():
-            if not isinstance(item, QgsComposerLegend):
+        for item in print_layout.items():
+            if not isinstance(item, QgsLayoutItemLegend):
                 continue
-            legend_model = item.modelV2()
+            legend_model = item.model()
             legend_model.setRootGroup(self.legend_tree_root)
-            item.synchronizeWithModel()
 
     def getQptFilePath(self):
         try:
@@ -294,7 +306,7 @@ class TemplateSelectorDialog(QtGui.QDialog):
         # Returns true if the template has a label element with the ID 'gridref'
 
         root = ET.parse(self.getQptFilePath())
-        return len(root.findall("//ComposerLabel/ComposerItem[@id='gridref']")) > 0
+        return len(root.findall("./LayoutItem[@id='gridref']"))
 
     def loadCopyrights(self):
         self.ui.copyrightComboBox.clear()
@@ -340,75 +352,67 @@ class TemplateSelectorDialog(QtGui.QDialog):
         return copyrightText
 
     def openTemplate(self):
-
-        templateFilePath = self.getTemplateFilePath()
-
-        if not os.path.isfile(templateFilePath):
-            QtGui.QMessageBox.critical(self.iface.mainWindow(), \
-                                       'Template Not Found', \
-                                       'The requested template (%s) is not currently available.' \
-                                       % templateFilePath)
+        template_path = self.getTemplateFilePath()
+        if not os.path.isfile(template_path):
+            msg = 'The requested template {} is not currently available.'.format(template_path)
+            QMessageBox.critical(self.iface.mainWindow(), 'Template Not Found', msg)
             return
 
-        # Load replaceable text
-        projectTitle = self.ui.titleLineEdit.text()
-        projectSubTitle = self.ui.subtitleLineEdit.text()
+        # Create a new print layout with name equal to the project title
+        project = QgsProject.instance()
+        layout_manager = project.layoutManager()
+        print_layout = QgsPrintLayout(project)
+        print_layout.setName(self.ui.titleLineEdit.text())
+        layout_manager.addLayout(print_layout)
 
-        # Set copyright
-
-        copyrightIndex = self.ui.copyrightComboBox.currentIndex()
-        self.replaceMap['copyright'] = self.getCopyrightText()
-        self.replaceMap['title'] = projectTitle
-        self.replaceMap['subtitle'] = projectSubTitle
-
-        # Create a new Composer View with name equal to the project
-        # title
-        composerView = self.iface.createNewComposer(projectTitle)
-
-        # Load the template file, replacing any text we find in
-        # '[' and ']'
+        # Load the template file, replacing any text we find in '[' and ']'
         try:
-            tree = ET.parse(templateFilePath)
+            tree = ET.parse(template_path)
             if self.hasGridRefs():
                 # Replace the content of the 'gridref' element based on the selected POI layer
-                composerLabelElem = tree.find("//ComposerLabel/ComposerItem[@id='gridref']/..")
+                composerLabelElem = tree.find("//LayoutItem[@id='gridref']")
                 composerLabelElem.attrib['labelText'] = self.getPoiText()
-            doc = QtXml.QDomDocument()
+            doc = QDomDocument()
             doc.setContent(ET.tostring(tree.getroot()))
         except IOError:
             # problem reading xml template
-            QtGui.QMessageBox.critical(self.iface.mainWindow(), \
-                                       'Failed to Read Template', \
-                                       'The requested template (%s) could not be read.' \
-                                       % templateFilePath)
+            msg = 'The requested template {} could not be read.'.format(template_path)
+            QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
             return
         except:
             # Unexpected problem
-            QtGui.QMessageBox.critical(self.iface.mainWindow(), \
-                                       'Failed to Read Template', \
-                                       'An unexpected error occured while reading (%s):\n\n%s' \
-                                       % (templateFilePath, traceback.format_exc()))
+            msg = 'An unexpected error occurred while reading {}:\n\n{}'.format(template_path, traceback.format_exc())
+            QMessageBox.critical(self.iface.mainWindow(),'Failed to Read Template', msg)
             return
 
-        # Loaded the XML, replacing any replacables
-        if not composerView.composition().loadFromTemplate(doc, self.replaceMap, True):
-            QtGui.QMessageBox.critical(self.iface.mainWindow(), \
-                                       'Failed to Read Template', \
-                                       'loadFromTemplate returned False.')
+        if not print_layout.loadFromTemplate(doc, QgsReadWriteContext(), True):
+            msg = 'loadFromTemplate returned False.'
+            QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
             return
+
+        # Load replaceable text
+        self.replaceMap['copyright'] = self.getCopyrightText()
+        self.replaceMap['title'] = self.ui.titleLineEdit.text()
+        # not in examples, is it still supported?
+        self.replaceMap['subtitle'] = self.ui.subtitleLineEdit.text()
+
+        for k, v in self.replaceMap.items():
+            item = print_layout.itemById(k)
+            if item:
+                item.setText(v)
 
         # Update the ComposerMap cached images of all ComposerMaps
         if self.identifiable_only:
             try:
-                self.set_legend_compositions(composerView)
+                self.set_legend_compositions(print_layout)
             except AttributeError:
-                self.iface.messageBar().pushMessage(
-                    'MoorTools',
-                    'Filtering by identifiable layers ignored - functionality available for QGIS 2.18 and higher.',
-                    level=0)
-        for i in range(len(self.maps_properties)):
-            compMap = composerView.composition().getComposerMapById(i)
-            values = self.maps_properties[compMap.displayName()]
+                msg = 'Filtering by identifiable layers ignored.'
+                self.iface.messageBar().pushMessage('MoorTools', msg, level=0)
+
+        # get map items only
+        map_items = [item for item in print_layout.items() if isinstance(item, QgsLayoutItemMap)]
+        for key, values in self.maps_properties.items():
+            compMap = next(m for m in map_items if m.displayName() == key)
             idx = values['idx']
             # Get the scale denominator (as a floating point)
             scaleCombo = self.ui.scalesGridLayout.itemAtPosition(idx, 3).widget()
@@ -417,21 +421,19 @@ class TemplateSelectorDialog(QtGui.QDialog):
                 scaleDenom = float(scaleCombo.currentText().replace(',', ''))
             except ValueError:
                 cleanedScaleString = scaleCombo.currentText().split(' (')[0]
-                cleanedScaleString = cleanedScaleString.replace(')', '')
-                cleanedScaleString = cleanedScaleString.replace(u'\u00A0', '')
-                scaleDenom = float(cleanedScaleString.replace(',', '').replace(' ', ''))
+                cleanedScaleString = ''.join(cleanedScaleString.split())
+                scaleDenom = float(cleanedScaleString)
             # Set the scale
             cme = compMap.extent()
             canvasEx = self.iface.mapCanvas().extent()
-            p1 = QgsPoint(canvasEx.center().x() - (cme.width() / 2.0),
+            p1 = QgsPointXY(canvasEx.center().x() - (cme.width() / 2.0),
                           canvasEx.center().y() - (cme.height() / 2.0))
-            p2 = QgsPoint(canvasEx.center().x() + (cme.width() / 2.0),
+            p2 = QgsPointXY(canvasEx.center().x() + (cme.width() / 2.0),
                           canvasEx.center().y() + (cme.height() / 2.0))
             newCme = QgsRectangle(p1, p2)
-            compMap.setNewExtent(newCme)
-            compMap.setNewScale(scaleDenom)
-
-            compMap.updateCachedImage()
+            compMap.setExtent(newCme)
+            compMap.setScale(scaleDenom)
+            compMap.refresh()
 
         # Set scale
         cur_idx = self.ui.suitableForComboBox.currentIndex()
@@ -445,10 +447,11 @@ class TemplateSelectorDialog(QtGui.QDialog):
             res_text = self.ui.suitableForComboBox.currentText()
             try:
                 dpi = int(res_text)
-            except TypeError:
+            except (TypeError, ValueError):
                 dpi = 96
-        composerView.composition().setPrintResolution(dpi)
+        print_layout.renderContext().setDpi(dpi)
 
+        self.iface.openLayoutDesigner(print_layout)
         # All done
         self.accept()
 

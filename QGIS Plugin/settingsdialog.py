@@ -21,7 +21,8 @@
 """
 
 import os
-from PyQt4 import QtCore, QtGui, uic
+from qgis.PyQt import QtCore, uic
+from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox
 # create the dialog for zoom to point
 
 PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -30,11 +31,11 @@ DEFAULTS = os.path.join(PARENT_DIR, 'defaults.txt')
 ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ui_settings.ui')
 
 
-class SettingsDialog(QtGui.QDialog):
+class SettingsDialog(QDialog):
 
     def __init__(self):
         
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         # Set up the user interface from Designer.
         self.ui = uic.loadUi(ui_file, self)
 
@@ -53,13 +54,13 @@ class SettingsDialog(QtGui.QDialog):
 
     def browseForProjectRoot(self):
         startingDir = str(self.settings.value("MoorTools/ProjectSelector/projectRoot", os.path.expanduser("~"), type=str))
-        d = str(QtGui.QFileDialog.getExistingDirectory(None, 'Select Projects Folder', startingDir))
+        d = str(QFileDialog.getExistingDirectory(None, 'Select Projects Folder', startingDir))
         if d != os.sep and d.lower() != 'c:\\' and d != '':
             self.ui.projectsFolderLineEdit.setText(d)
 
     def browseForTemplateRoot(self):
         startingDir = str(self.settings.value("MoorTools/TemplateSelector/templateRoot", os.path.expanduser("~"), type=str))
-        d = str(QtGui.QFileDialog.getExistingDirectory(None, 'Select Root of Template Folder Structure', startingDir))
+        d = str(QFileDialog.getExistingDirectory(None, 'Select Root of Template Folder Structure', startingDir))
         if d != os.sep and d.lower() != 'c:\\' and d != '':
             self.ui.templateRootLineEdit.setText(d)
 
@@ -73,7 +74,7 @@ class SettingsDialog(QtGui.QDialog):
                 paths.write('projects:{}\n'.format(projects))
                 paths.write('templates:{}\n'.format(templates))
         except IOError:
-            QtGui.QMessageBox.warning(None, \
+            QMessageBox.warning(None, \
                                       'Could not save folders', \
                                       '%s could not be opened for writing, please ensure you have permission to edit this file.' \
                                       % DEFAULTS )
@@ -81,4 +82,4 @@ class SettingsDialog(QtGui.QDialog):
         self.settings.setValue("MoorTools/ProjectSelector/isEnabled", project_selector_enabled)
         identifiable_only = self.ui.identifiableOnly.isChecked()
         self.settings.setValue("MoorTools/ProjectSelector/identifiableOnly", identifiable_only)
-        QtGui.QDialog.accept(self)
+        QDialog.accept(self)
