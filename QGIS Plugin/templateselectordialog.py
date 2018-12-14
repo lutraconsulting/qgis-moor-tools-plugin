@@ -37,7 +37,8 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsFeature,
     QgsPointXY,
-    QgsRectangle
+    QgsRectangle,
+    QgsWkbTypes
 )
 from qgis.gui import QtCore
 from math import ceil
@@ -133,8 +134,7 @@ class TemplateSelectorDialog(QDialog):
     def populatePoiLayers(self):
         # Called once on init
         for layer in self.iface.mapCanvas().layers():
-            # Point type is 0
-            if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == 0:
+            if layer.type() == QgsMapLayer.VectorLayer and layer.geometryType() == QgsWkbTypes.PointGeometry:
                 self.ui.poiLayerComboBox.addItem(layer.name())
 
     def populateTemplateTypes(self):
@@ -209,9 +209,8 @@ class TemplateSelectorDialog(QDialog):
             self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
 
     def populateScaleChoices(self):
-
         """ When the template type combo is initialised or changes, update the
-        layout of scales for the various Composer Maps """
+        layout of scales for the various map elements in layout. """
 
         # Clear previous
         for i in reversed(list(range(self.ui.scalesGridLayout.count()))):
@@ -221,9 +220,9 @@ class TemplateSelectorDialog(QDialog):
             else:
                 item.widget().setParent(None)
 
-        composerMapNames = self.fetchComposerMapNames()
+        map_elements = self.fetchComposerMapNames()
         i = 1
-        for composerMapName in composerMapNames:
+        for composerMapName in map_elements:
 
             label_1 = QLabel(composerMapName)
             self.ui.scalesGridLayout.addWidget(label_1, i, 0)
@@ -247,12 +246,12 @@ class TemplateSelectorDialog(QDialog):
 
             i += 1
 
-        if len(composerMapNames) == 0:
+        if len(map_elements) == 0:
             label = QLabel('No layout map elements found. Limited usability.')
             self.ui.scalesGridLayout.addWidget(label, i, 1)
 
     def fetchComposerMapNames(self):
-        # Return a list of the names of Composer Maps in the current .qpt file
+        # Return a list of the names of layout map elements in the current .qpt file
         composerNames = []
         self.maps_properties.clear()
         if self.ui.templateTypeComboBox.count() == 0:
@@ -365,13 +364,9 @@ class TemplateSelectorDialog(QDialog):
         print_layout.setName(self.ui.titleLineEdit.text())
         layout_manager.addLayout(print_layout)
 
-        # Load the template file, replacing any text we find in '[' and ']'
+        # Load the template file
         try:
             tree = ET.parse(template_path)
-            if self.hasGridRefs():
-                # Replace the content of the 'gridref' element based on the selected POI layer
-                composerLabelElem = tree.find("//LayoutItem[@id='gridref']")
-                composerLabelElem.attrib['labelText'] = self.getPoiText()
             doc = QDomDocument()
             doc.setContent(ET.tostring(tree.getroot()))
         except IOError:
@@ -395,13 +390,14 @@ class TemplateSelectorDialog(QDialog):
         self.replaceMap['title'] = self.ui.titleLineEdit.text()
         # not in examples, is it still supported?
         self.replaceMap['subtitle'] = self.ui.subtitleLineEdit.text()
+        self.replaceMap['gridref'] = self.getPoiText()
 
         for k, v in self.replaceMap.items():
             item = print_layout.itemById(k)
             if item:
                 item.setText(v)
 
-        # Update the ComposerMap cached images of all ComposerMaps
+        # Update images of all maps elements in layout
         if self.identifiable_only:
             try:
                 self.set_legend_compositions(print_layout)
@@ -412,7 +408,7 @@ class TemplateSelectorDialog(QDialog):
         # get map items only
         map_items = [item for item in print_layout.items() if isinstance(item, QgsLayoutItemMap)]
         for key, values in self.maps_properties.items():
-            compMap = next(m for m in map_items if m.displayName() == key)
+            layout_map = next(m for m in map_items if m.displayName() == key)
             idx = values['idx']
             # Get the scale denominator (as a floating point)
             scaleCombo = self.ui.scalesGridLayout.itemAtPosition(idx, 3).widget()
@@ -424,16 +420,16 @@ class TemplateSelectorDialog(QDialog):
                 cleanedScaleString = ''.join(cleanedScaleString.split())
                 scaleDenom = float(cleanedScaleString)
             # Set the scale
-            cme = compMap.extent()
+            cme = layout_map.extent()
             canvasEx = self.iface.mapCanvas().extent()
             p1 = QgsPointXY(canvasEx.center().x() - (cme.width() / 2.0),
                           canvasEx.center().y() - (cme.height() / 2.0))
             p2 = QgsPointXY(canvasEx.center().x() + (cme.width() / 2.0),
                           canvasEx.center().y() + (cme.height() / 2.0))
             newCme = QgsRectangle(p1, p2)
-            compMap.setExtent(newCme)
-            compMap.setScale(scaleDenom)
-            compMap.refresh()
+            layout_map.setExtent(newCme)
+            layout_map.setScale(scaleDenom)
+            layout_map.refresh()
 
         # Set scale
         cur_idx = self.ui.suitableForComboBox.currentIndex()
