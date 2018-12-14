@@ -1,6 +1,6 @@
-# Moor Tools (QGIS Plugin)
+# Project and Template Selector (QGIS Plugin)
 
-Tools for simplifying and automating common tasks for national parks and other protected areas. Catchy name courtesy of Dartmoor National Park, UK.
+Tools for simplifying and automating common tasks for national parks and other protected areas.
 
 ## Status
 
@@ -15,7 +15,7 @@ Please note this plugin has been developed for very specific use cases and as su
 
 ## Configuration
 
-Moor Tools can be configured from within QGIS via Plugins Menu > Moor Tools > Configure Moor Tools.
+Tools can be configured from within QGIS via Plugins Menu > Project and Template Selector > Configure Project and Template Selector.
 
 ![](Images/moor_tools_config.png) 
 
