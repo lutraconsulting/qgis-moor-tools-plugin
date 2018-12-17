@@ -154,7 +154,7 @@
    <item row="4" column="0" colspan="5">
     <widget class="QGroupBox" name="mapScalesGroupBox">
      <property name="title">
-      <string>Composer Map Scale(s)</string>
+      <string>Layout Map Scale(s)</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">

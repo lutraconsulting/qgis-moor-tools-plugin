@@ -58,7 +58,6 @@ class TemplateSelectorDialog(QDialog):
         self.supportedPaperSizes = ['A0', 'A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8']  # ISO A series
         self.paperSizesPresent = []
         self.presetScales = ['200', '500', '1 000', '1 250', '2 500', '5 000', '10 000', '25 000', '50 000', '100 000']
-        self.maps_properties = {}
 
         self.iface = iface
         QDialog.__init__(self)
@@ -105,10 +104,13 @@ class TemplateSelectorDialog(QDialog):
         map_extent = canvas.extent()
         me_height = map_extent.height() * 1000 / coef
         me_width = map_extent.width() * 1000 / coef
-        for map_name, values in list(self.maps_properties.items()):
-            idx = values['idx']
-            h = values['height']
-            w = values['width']
+        print_layout = self.get_print_layout()
+        map_elements = [item for item in print_layout.items() if isinstance(item, QgsLayoutItemMap)]
+
+        for idx, item in enumerate(map_elements):
+            size = item.sizeWithUnits()
+            h = size.height()
+            w = size.width()
             hscale = me_height / h
             wscale = me_width / w
             scale = hscale if hscale > wscale else wscale
@@ -220,11 +222,11 @@ class TemplateSelectorDialog(QDialog):
             else:
                 item.widget().setParent(None)
 
-        map_elements = self.fetchComposerMapNames()
-        i = 1
-        for composerMapName in map_elements:
-
-            label_1 = QLabel(composerMapName)
+        print_layout = self.get_print_layout()
+        map_elements = [item for item in print_layout.items() if isinstance(item, QgsLayoutItemMap)]
+        i = 0
+        for elem in map_elements:
+            label_1 = QLabel(elem.displayName())
             self.ui.scalesGridLayout.addWidget(label_1, i, 0)
 
             spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -249,29 +251,6 @@ class TemplateSelectorDialog(QDialog):
         if len(map_elements) == 0:
             label = QLabel('No layout map elements found. Limited usability.')
             self.ui.scalesGridLayout.addWidget(label, i, 1)
-
-    def fetchComposerMapNames(self):
-        # Return a list of the names of layout map elements in the current .qpt file
-        composerNames = []
-        self.maps_properties.clear()
-        if self.ui.templateTypeComboBox.count() == 0:
-            return composerNames
-
-        root = ET.parse(self.getQptFilePath())
-
-        i = 1
-        for composerMapElement in root.findall("./LayoutItem[@mapRotation]"):
-            try:
-                name = composerMapElement.attrib['id']
-                size = composerMapElement.attrib['size'].split(',')
-            except ValueError:
-                name = 'Map %d' % i
-            if len(name) == 0:
-                name = 'Map %d' % i
-            self.maps_properties[name] = {'width': float(size[0]), 'height': float(size[1]), 'idx': i}
-            composerNames.append(name)
-            i += 1
-        return composerNames
 
     def set_legend_compositions(self, print_layout):
         non_ident = QgsProject.instance().nonIdentifiableLayers()
@@ -351,40 +330,7 @@ class TemplateSelectorDialog(QDialog):
         return copyrightText
 
     def openTemplate(self):
-        template_path = self.getTemplateFilePath()
-        if not os.path.isfile(template_path):
-            msg = 'The requested template {} is not currently available.'.format(template_path)
-            QMessageBox.critical(self.iface.mainWindow(), 'Template Not Found', msg)
-            return
-
-        # Create a new print layout with name equal to the project title
-        project = QgsProject.instance()
-        layout_manager = project.layoutManager()
-        print_layout = QgsPrintLayout(project)
-        print_layout.setName(self.ui.titleLineEdit.text())
-        layout_manager.addLayout(print_layout)
-
-        # Load the template file
-        try:
-            tree = ET.parse(template_path)
-            doc = QDomDocument()
-            doc.setContent(ET.tostring(tree.getroot()))
-        except IOError:
-            # problem reading xml template
-            msg = 'The requested template {} could not be read.'.format(template_path)
-            QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
-            return
-        except:
-            # Unexpected problem
-            msg = 'An unexpected error occurred while reading {}:\n\n{}'.format(template_path, traceback.format_exc())
-            QMessageBox.critical(self.iface.mainWindow(),'Failed to Read Template', msg)
-            return
-
-        if not print_layout.loadFromTemplate(doc, QgsReadWriteContext(), True):
-            msg = 'loadFromTemplate returned False.'
-            QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
-            return
-
+        print_layout = self.get_print_layout()
         # Load replaceable text
         self.replaceMap['copyright'] = self.getCopyrightText()
         self.replaceMap['title'] = self.ui.titleLineEdit.text()
@@ -407,9 +353,7 @@ class TemplateSelectorDialog(QDialog):
 
         # get map items only
         map_items = [item for item in print_layout.items() if isinstance(item, QgsLayoutItemMap)]
-        for key, values in self.maps_properties.items():
-            layout_map = next(m for m in map_items if m.displayName() == key)
-            idx = values['idx']
+        for idx, layout_map in enumerate(map_items):
             # Get the scale denominator (as a floating point)
             scaleCombo = self.ui.scalesGridLayout.itemAtPosition(idx, 3).widget()
             assert scaleCombo != 0
@@ -476,3 +420,43 @@ class TemplateSelectorDialog(QDialog):
     def loadHelpPage(self):
         helpUrl = 'https://github.com/lutraconsulting/qgis-moor-tools-plugin/blob/master/README.md'
         QtGui.QDesktopServices.openUrl(QtCore.QUrl(helpUrl))
+
+    def get_print_layout(self):
+        template_path = self.getTemplateFilePath()
+        if not os.path.isfile(template_path):
+            msg = 'The requested template {} is not currently available.'.format(template_path)
+            QMessageBox.critical(self.iface.mainWindow(), 'Template Not Found', msg)
+            return
+
+        # Create a new print layout with name equal to the project title
+        project = QgsProject.instance()
+        layout_manager = project.layoutManager()
+        existing_print_layout = layout_manager.layoutByName(self.ui.titleLineEdit.text())
+        if existing_print_layout:
+            layout_manager.removeLayout(existing_print_layout)
+        print_layout = QgsPrintLayout(project)
+        print_layout.setName(self.ui.titleLineEdit.text())
+        layout_manager.addLayout(print_layout)
+
+        # Load the template file
+        try:
+            tree = ET.parse(template_path)
+            doc = QDomDocument()
+            doc.setContent(ET.tostring(tree.getroot()))
+        except IOError:
+            # problem reading xml template
+            msg = 'The requested template {} could not be read.'.format(template_path)
+            QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
+            return
+        except:
+            # Unexpected problem
+            msg = 'An unexpected error occurred while reading {}:\n\n{}'.format(template_path, traceback.format_exc())
+            QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
+            return
+
+        if not print_layout.loadFromTemplate(doc, QgsReadWriteContext(), True):
+            msg = 'loadFromTemplate returned False.'
+            QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
+            return
+
+        return print_layout

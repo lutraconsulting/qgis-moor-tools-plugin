@@ -10,7 +10,7 @@
 
 [general]
 name=Project and Template Selector
-qgisMinimumVersion=3.0
+qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 description=Tool for selecting pre-defined QGIS projects.
 version=1.3
