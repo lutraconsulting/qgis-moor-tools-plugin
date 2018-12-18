@@ -1,9 +1,0 @@
-DNPA|© Crown copyright and database rights 2014 Ordnance Survey 100024842|1
-Aerial 2010|Cities Revealed aerial photography copyright The GeoInformation Group 2010|0
-Aerial 2006|© Copyright Cartographic Engineering 2006|0
-Aerial 1999|This Image is an extract from the Millenium MapTM, which is copyright Getmapping Plc|0
-Aerial 1947|© English Heritage (NMR) 1947 RAF Photography|0
-Member of Public|© Crown copyright and database rights 2014 Ordnance Survey 100024842.  You are not permitted to copy, sub-licence, distribute or sell any of this data to third parties in any form|0
-LIDAR 2009|Copyright © LIDAR Data Geomatics Group 2009|0
-OS Open Data|Copyright © LIDAR Data Geomatics Group 2009|0
-Historic Mapping|© Copyright and Database Right Landmark Information Group Limited 2014|0

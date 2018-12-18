@@ -20,7 +20,8 @@
  ***************************************************************************/
 """
 import os
-from PyQt4 import QtCore, QtGui, uic
+from qgis.PyQt import QtCore, uic
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 # create the dialog for zoom to point
 
 ui_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'ui_projectselector.ui')
@@ -30,13 +31,13 @@ class ProjectSelectorException(Exception):
     pass
 
 
-class ProjectSelectorDialog(QtGui.QDialog):
+class ProjectSelectorDialog(QDialog):
     
     def __init__(self, iface):
         
         self.iface = iface
 
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         # Set up the user interface from Designer.
         self.ui = uic.loadUi(ui_file, self)
         self.plugin_dir = os.path.dirname(__file__)
@@ -44,11 +45,11 @@ class ProjectSelectorDialog(QtGui.QDialog):
         # import pydevd; pydevd.settrace()
         
         # Disable OK button until we are sure we have at least one project
-        self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
 
         # Set up the list of templates
         self.settings = QtCore.QSettings()
-        self.projectFileRoot = self.settings.value('MoorTools/ProjectSelector/projectRoot', '', type=str)
+        self.projectFileRoot = self.settings.value('SelectorTools/ProjectSelector/projectRoot', '', type=str)
         if len(self.projectFileRoot) == 0 or not os.path.isdir(self.projectFileRoot):
             raise ProjectSelectorException('\'%s\' is not a valid project file root folder.' % self.projectFileRoot)
 
@@ -65,7 +66,7 @@ class ProjectSelectorDialog(QtGui.QDialog):
                     self.ui.projectGroupComboBox.addItem(entry)
                     break
         self.ui.projectGroupComboBox.blockSignals(False)
-        defaultGroup = self.settings.value('MoorTools/ProjectSelector/defaultProjectGroup', '', type=str)
+        defaultGroup = self.settings.value('SelectorTools/ProjectSelector/defaultProjectGroup', '', type=str)
         if len(defaultGroup) > 0:
             self.ui.projectGroupComboBox.setCurrentIndex( self.ui.projectGroupComboBox.findText(defaultGroup) )
         if self.ui.projectGroupComboBox.count() == 1:
@@ -95,7 +96,7 @@ class ProjectSelectorDialog(QtGui.QDialog):
         if projectGroupname == '':
             return
         self.ui.selectedProjectListWidget.clear()
-        self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         groupFolderPath = os.path.join(self.projectFileRoot, projectGroupname)
         for entry in os.listdir(groupFolderPath):
             projectFilePath = os.path.join(groupFolderPath, entry)
@@ -104,7 +105,7 @@ class ProjectSelectorDialog(QtGui.QDialog):
             if entry.lower().endswith('.qgs'):
                 prettyName, dummy = os.path.splitext(entry)
                 self.ui.selectedProjectListWidget.addItem(prettyName)
-                self.ui.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+                self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         
         # Set the default project (if exists)
         defP = self.getDefaultProject(groupFolderPath)
@@ -124,5 +125,5 @@ class ProjectSelectorDialog(QtGui.QDialog):
         
         self.iface.addProject(projectPath)
         # Store last used project group
-        self.settings.setValue('MoorTools/ProjectSelector/defaultProjectGroup', self.ui.projectGroupComboBox.currentText())
+        self.settings.setValue('SelectorTools/ProjectSelector/defaultProjectGroup', self.ui.projectGroupComboBox.currentText())
         self.accept()

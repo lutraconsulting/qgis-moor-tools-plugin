@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/projectselector" >
-        <file>icon.png</file>
-    </qresource>
-	<qresource prefix="/plugins/projectselector" >
-        <file>template_selector_icon.png</file>
-    </qresource>
-</RCC>

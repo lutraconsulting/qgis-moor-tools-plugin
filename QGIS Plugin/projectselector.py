@@ -21,12 +21,13 @@
 """
 # Import the PyQt and QGIS libraries
 import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtGui import QIcon
 # Import the code for the dialog
-from projectselectordialog import *
-from templateselectordialog import *
-from settingsdialog import *
+from .projectselectordialog import *
+from .templateselectordialog import *
+from .settingsdialog import *
 
 
 class ProjectSelector(object):
@@ -55,7 +56,7 @@ class ProjectSelector(object):
                                             u"Project Selector", self.iface.mainWindow())
         self.templateSelectorAction = QAction(QIcon(temp_icon_path),
                                               u"Template Selector", self.iface.mainWindow())
-        self.configureAction = QAction(u"Configure Moor Tools", self.iface.mainWindow())
+        self.configureAction = QAction(u"Configure Project and Template Selector", self.iface.mainWindow())
         # connect the action to the run method
         self.projectSelectorAction.triggered.connect(self.selectProject)
         self.templateSelectorAction.triggered.connect(self.selectTemplate)
@@ -64,9 +65,9 @@ class ProjectSelector(object):
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.projectSelectorAction)
         self.iface.addToolBarIcon(self.templateSelectorAction)
-        self.iface.addPluginToMenu(u"&Moor Tools", self.projectSelectorAction)
-        self.iface.addPluginToMenu(u"&Moor Tools", self.templateSelectorAction)
-        self.iface.addPluginToMenu(u"&Moor Tools", self.configureAction)
+        self.iface.addPluginToMenu(u"&Project and Template Selector", self.projectSelectorAction)
+        self.iface.addPluginToMenu(u"&Project and Template Selector", self.templateSelectorAction)
+        self.iface.addPluginToMenu(u"&Project and Template Selector", self.configureAction)
         
         # Connect the dialog to QGIS' initializationCompleted() signal
         self.iface.initializationCompleted.connect(self.onInitializationCompleted)
@@ -75,14 +76,14 @@ class ProjectSelector(object):
         # Disconnect the dialog to QGIS' initializationCompleted() signal
         self.iface.initializationCompleted.disconnect(self.onInitializationCompleted)
         # Remove the plugin menu item and icon
-        self.iface.removePluginMenu(u"&Moor Tools", self.configureAction)
-        self.iface.removePluginMenu(u"&Moor Tools", self.projectSelectorAction)
-        self.iface.removePluginMenu(u"&Moor Tools", self.templateSelectorAction)
+        self.iface.removePluginMenu(u"&Project and Template Selector", self.configureAction)
+        self.iface.removePluginMenu(u"&Project and Template Selector", self.projectSelectorAction)
+        self.iface.removePluginMenu(u"&Project and Template Selector", self.templateSelectorAction)
         self.iface.removeToolBarIcon(self.projectSelectorAction)
         self.iface.removeToolBarIcon(self.templateSelectorAction)
         
     def onInitializationCompleted(self):
-        project_selector_enabled = QSettings().value("MoorTools/ProjectSelector/isEnabled", True, type=bool)
+        project_selector_enabled = QSettings().value("SelectorTools/ProjectSelector/isEnabled", True, type=bool)
         if len(QgsProject.instance().fileName()) == 0 and project_selector_enabled:
             # The project file name will only be populated after the initializationCompleted() signal is emitted if QGIS has
             # been invoked on a .qgs (project) file.  So only show the selector if we've not been opened on an existing .qgs
@@ -94,11 +95,11 @@ class ProjectSelector(object):
         try:
             projectSelectorDlg = ProjectSelectorDialog(self.iface)
         except ProjectSelectorException:
-            reply = QtGui.QMessageBox.question(self.iface.mainWindow(),
-                'Moor Tools (Project Selector): No Projects Folder Specified',
+            reply = QMessageBox.question(self.iface.mainWindow(),
+                'Project Selector: No Projects Folder Specified',
                 'It looks like you haven\'t yet specified the folder containing your QGIS start-up projects. Would you like to do that now?',
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-            if reply == QtGui.QMessageBox.No:
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if reply == QMessageBox.No:
                 return
             self.configure()
             return # The user will need to invoke the action again
@@ -117,8 +118,8 @@ class ProjectSelector(object):
         try:
             templateSelectorDlg = TemplateSelectorDialog(self.iface)
         except TemplateSelectorException:
-            reply = QtGui.QMessageBox.question(self.iface.mainWindow(), 'Moor Tools (Template Selector): No Template Folder Specified', 'It looks like you haven\'t yet specified the folder containing your templates. Would you like to do that now?', QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-            if reply == QtGui.QMessageBox.No:
+            reply = QMessageBox.question(self.iface.mainWindow(), 'Template Selector: No Template Folder Specified', 'It looks like you haven\'t yet specified the folder containing your templates. Would you like to do that now?', QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+            if reply == QMessageBox.No:
                 return
             self.configure()
             return # The user will need to invoke the action again

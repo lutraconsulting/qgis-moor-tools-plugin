@@ -1,6 +1,6 @@
-# Moor Tools (QGIS Plugin)
+# Project and Template Selector (QGIS Plugin)
 
-Tools for simplifying and automating common tasks for national parks and other protected areas. Catchy name courtesy of Dartmoor National Park, UK.
+Tools for simplifying and automating common tasks for national parks and other protected areas.
 
 ## Status
 
@@ -15,7 +15,7 @@ Please note this plugin has been developed for very specific use cases and as su
 
 ## Configuration
 
-Moor Tools can be configured from within QGIS via Plugins Menu > Moor Tools > Configure Moor Tools.
+Tools can be configured from within QGIS via Plugins Menu > Project and Template Selector > Configure Project and Template Selector.
 
 ![](Images/moor_tools_config.png) 
 
@@ -39,7 +39,7 @@ QGIS project files (.qgs files) are grouped into folders. Folder names are used 
 
 ### Folder Containing Templates (Template Selector)
 
-The _Template Selector_ simplifies the process of selecting and configuring QGIS print composer templates (.qpt files) and provides a dialog like this:
+The _Template Selector_ simplifies the process of selecting and configuring QGIS print layout templates (.qpt files) and provides a dialog like this:
 
 ![](Images/template_selector.png)
 
@@ -59,13 +59,13 @@ The _Folder Containing Templates_ configuration option specifies the path to a f
 	- Environmental Impact Assessment
 		- ... (similar folder content to previous example
 
-The names of the folders under the top-level container folder (e.g. _Planning Application_) are used to identify the type of print composer template (see image above).
+The names of the folders under the top-level container folder (e.g. _Planning Application_) are used to identify the type of print layout template (see image above).
 
 In the example above the _Planning Application_ template is available as A4 (Landscape and Portrait) and A3 (Landscape). All ISO A series sizes are supported.
 
 In this case the optional _images_ folder contains any logos or other images referenced by the associated .qpt files. 
 
-The optional _Copyrights_ folder contains the copyright text(s) available when using the _Planning Application_ composer template. _default.txt_ can optionally be used to specify the default copyright text for the template. This is configured as described above for the _Project Selector_.
+The optional _Copyrights_ folder contains the copyright text(s) available when using the _Planning Application_ layout template. _default.txt_ can optionally be used to specify the default copyright text for the template. This is configured as described above for the _Project Selector_.
 
 ### Show on QGIS startup (Project Selector)
 
@@ -77,20 +77,21 @@ You may be using Moor Tools as part of a wider QGIS deployment. In this case you
 
 ## Creating Templates
 
-This section describes how to create effective composer templates.
+This section describes how to create effective layout templates.
 
 ### String Replacement
 
-_Template Selector_ supports automatic replacement of strings in addition to those already supported by QGIS. The following strings will automatically be replaced within composer templates:
+_Template Selector_ supports automatic replacement of strings in addition to those already supported by QGIS. The following strings will automatically be replaced within layout templates:
 
-- [username] : the user's username (e.g. %USERNAME%)
+- [username] : the user's username (e.g. %USERNAME%), specified as environment variable
 - [title] : The _Title_ specified by the user in the above dialog
 - [subtitle] : The _Sub-title_ specified by the user in the above dialog
-- [copyright] : The content of the selected copyright file 
+- [copyright] : The content of the selected copyright file
 
+NOTE: If you update from QGIS 2 print templates, in QGIS 3 it is necessary to set up 'id' fields of the items above as 'author', 'title', 'subtitle', 'copyright', respectively.
 ### Multiple Composer Maps    
 
-Templates with multiple composer maps are supported. Composer maps are identified by their _Item ID_ property wherever present and their scales can be set independently.
+Templates with multiple layout maps are supported. Composer maps are identified by their _Item ID_ property wherever present and their scales can be set independently.
 
 ### Points of Interest
 
@@ -103,13 +104,13 @@ This can be achieved as follows:
 1. Create a new (point) layer describing your points of interest
 	1.  The example above included a field called 'label'
 2. Digitise your points of interest and add label values as required
-3. Style and label the layer as you wish it to appear in the print composer
+3. Style and label the layer as you wish it to appear in the print layout
 	1. The example above uses a red cross and associated label with buffer
 4. Choose a compatible template (these are explained below)
 	1. The _POI Layer_ options should now become active
 5. Select the points of interest layer and appropriate label field name
 
-The resulting print composer output should show the grid references for the points of interest. 
+The resulting print layout output should show the grid references for the points of interest.
 
 ### Creating Compatible Templates for Points of Interest
 
@@ -124,11 +125,11 @@ This label will be automatically updated with grid references of points of inter
 
 ### Images Loading as Red Crosses
 
-This can happen when references to files used in print composer templates have been saved using relative paths.
+This can happen when references to files used in print layout templates have been saved using relative paths.
 
 This can be resolved by:
 
 1. QGIS > Project Properties > General tab > Save paths > absolute
-2. Re-saving the composer template
+2. Re-saving the layout template
 
 Alternatively the .qpt file can be edited by hand to specify the absolute path to referenced files. 

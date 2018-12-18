@@ -21,7 +21,8 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
+
 def classFactory(iface):
     # load ProjectSelector class from file ProjectSelector
-    from projectselector import ProjectSelector
+    from .projectselector import ProjectSelector
     return ProjectSelector(iface)
