@@ -49,7 +49,7 @@ class ProjectSelectorDialog(QDialog):
 
         # Set up the list of templates
         self.settings = QtCore.QSettings()
-        self.projectFileRoot = self.settings.value('MoorTools/ProjectSelector/projectRoot', '', type=str)
+        self.projectFileRoot = self.settings.value('SelectorTools/ProjectSelector/projectRoot', '', type=str)
         if len(self.projectFileRoot) == 0 or not os.path.isdir(self.projectFileRoot):
             raise ProjectSelectorException('\'%s\' is not a valid project file root folder.' % self.projectFileRoot)
 
@@ -66,7 +66,7 @@ class ProjectSelectorDialog(QDialog):
                     self.ui.projectGroupComboBox.addItem(entry)
                     break
         self.ui.projectGroupComboBox.blockSignals(False)
-        defaultGroup = self.settings.value('MoorTools/ProjectSelector/defaultProjectGroup', '', type=str)
+        defaultGroup = self.settings.value('SelectorTools/ProjectSelector/defaultProjectGroup', '', type=str)
         if len(defaultGroup) > 0:
             self.ui.projectGroupComboBox.setCurrentIndex( self.ui.projectGroupComboBox.findText(defaultGroup) )
         if self.ui.projectGroupComboBox.count() == 1:
@@ -125,5 +125,5 @@ class ProjectSelectorDialog(QDialog):
         
         self.iface.addProject(projectPath)
         # Store last used project group
-        self.settings.setValue('MoorTools/ProjectSelector/defaultProjectGroup', self.ui.projectGroupComboBox.currentText())
+        self.settings.setValue('SelectorTools/ProjectSelector/defaultProjectGroup', self.ui.projectGroupComboBox.currentText())
         self.accept()

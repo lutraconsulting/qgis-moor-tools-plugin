@@ -83,7 +83,7 @@ class ProjectSelector(object):
         self.iface.removeToolBarIcon(self.templateSelectorAction)
         
     def onInitializationCompleted(self):
-        project_selector_enabled = QSettings().value("MoorTools/ProjectSelector/isEnabled", True, type=bool)
+        project_selector_enabled = QSettings().value("SelectorTools/ProjectSelector/isEnabled", True, type=bool)
         if len(QgsProject.instance().fileName()) == 0 and project_selector_enabled:
             # The project file name will only be populated after the initializationCompleted() signal is emitted if QGIS has
             # been invoked on a .qgs (project) file.  So only show the selector if we've not been opened on an existing .qgs

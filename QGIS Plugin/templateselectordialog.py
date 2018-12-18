@@ -38,7 +38,8 @@ from qgis.core import (
     QgsFeature,
     QgsPointXY,
     QgsRectangle,
-    QgsWkbTypes
+    QgsWkbTypes,
+    QgsUnitTypes
 )
 from qgis.gui import QtCore
 from math import ceil
@@ -66,8 +67,8 @@ class TemplateSelectorDialog(QDialog):
 
         # Set up the list of templates
         s = QtCore.QSettings()
-        self.identifiable_only = s.value("MoorTools/ProjectSelector/identifiableOnly", True, type=bool)
-        self.templateFileRoot = s.value("MoorTools/TemplateSelector/templateRoot", '', type=str)
+        self.identifiable_only = s.value("SelectorTools/ProjectSelector/identifiableOnly", True, type=bool)
+        self.templateFileRoot = s.value("SelectorTools/TemplateSelector/templateRoot", '', type=str)
         if len(self.templateFileRoot) == 0 or not os.path.isdir(self.templateFileRoot):
             raise TemplateSelectorException('\'%s\' is not a valid template file root folder.' % self.templateFileRoot)
         self.populateTemplateTypes()
@@ -100,7 +101,7 @@ class TemplateSelectorDialog(QDialog):
     def autofit_map(self):
         canvas = self.iface.mapCanvas()
         units = canvas.mapUnits()
-        coef = 1 / 0.3048 if units == 1 else 1
+        coef = 1 / 0.3048 if units == QgsUnitTypes.DistanceFeet else 1
         map_extent = canvas.extent()
         me_height = map_extent.height() * 1000 / coef
         me_width = map_extent.width() * 1000 / coef
@@ -197,7 +198,8 @@ class TemplateSelectorDialog(QDialog):
         self.populateScaleChoices()
         poiEnabled = False
         if self.ui.orientationComboBox.count() > 0:
-            poiEnabled = self.hasGridRefs()
+            print_layout = self.get_print_layout()
+            poiEnabled = True if print_layout.itemById('gridref') else False
         self.ui.poiLayerLabel.setEnabled(poiEnabled)
         self.ui.poiLayerComboBox.setEnabled(poiEnabled)
         self.ui.poiFieldLabel.setEnabled(poiEnabled)
@@ -280,12 +282,6 @@ class TemplateSelectorDialog(QDialog):
             qptFilePath = None
         return qptFilePath
 
-    def hasGridRefs(self):
-        # Returns true if the template has a label element with the ID 'gridref'
-
-        root = ET.parse(self.getQptFilePath())
-        return len(root.findall("./LayoutItem[@id='gridref']"))
-
     def loadCopyrights(self):
         self.ui.copyrightComboBox.clear()
         templateFolder = os.path.join(self.templateFileRoot, self.ui.templateTypeComboBox.currentText())
@@ -349,7 +345,7 @@ class TemplateSelectorDialog(QDialog):
                 self.set_legend_compositions(print_layout)
             except AttributeError:
                 msg = 'Filtering by identifiable layers ignored.'
-                self.iface.messageBar().pushMessage('MoorTools', msg, level=0)
+                self.iface.messageBar().pushMessage('Project and Template Selector: ', msg, level=0)
 
         # get map items only
         map_items = [item for item in print_layout.items() if isinstance(item, QgsLayoutItemMap)]

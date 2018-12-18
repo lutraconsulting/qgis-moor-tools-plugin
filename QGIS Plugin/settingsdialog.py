@@ -47,28 +47,28 @@ class SettingsDialog(QDialog):
             templates = paths.readline().strip().split(':', 1)[-1]
             self.ui.projectsFolderLineEdit.setText(projects)
             self.ui.templateRootLineEdit.setText(templates)
-        project_selector_enabled = self.settings.value("MoorTools/ProjectSelector/isEnabled", True, type=bool)
-        identifiable_only = self.settings.value("MoorTools/ProjectSelector/identifiableOnly", True, type=bool)
+        project_selector_enabled = self.settings.value("SelectorTools/ProjectSelector/isEnabled", True, type=bool)
+        identifiable_only = self.settings.value("SelectorTools/ProjectSelector/identifiableOnly", True, type=bool)
         self.ui.projectSelectorEnabledCheckBox.setChecked(project_selector_enabled)
         self.ui.identifiableOnly.setChecked(identifiable_only)
 
     def browseForProjectRoot(self):
-        startingDir = str(self.settings.value("MoorTools/ProjectSelector/projectRoot", os.path.expanduser("~"), type=str))
+        startingDir = str(self.settings.value("SelectorTools/ProjectSelector/projectRoot", os.path.expanduser("~"), type=str))
         d = str(QFileDialog.getExistingDirectory(None, 'Select Projects Folder', startingDir))
         if d != os.sep and d.lower() != 'c:\\' and d != '':
             self.ui.projectsFolderLineEdit.setText(d)
 
     def browseForTemplateRoot(self):
-        startingDir = str(self.settings.value("MoorTools/TemplateSelector/templateRoot", os.path.expanduser("~"), type=str))
+        startingDir = str(self.settings.value("SelectorTools/TemplateSelector/templateRoot", os.path.expanduser("~"), type=str))
         d = str(QFileDialog.getExistingDirectory(None, 'Select Root of Template Folder Structure', startingDir))
         if d != os.sep and d.lower() != 'c:\\' and d != '':
             self.ui.templateRootLineEdit.setText(d)
 
     def accept(self):
         projects = self.ui.projectsFolderLineEdit.text()
-        self.settings.setValue("MoorTools/ProjectSelector/projectRoot", projects)
+        self.settings.setValue("SelectorTools/ProjectSelector/projectRoot", projects)
         templates = self.ui.templateRootLineEdit.text()
-        self.settings.setValue("MoorTools/TemplateSelector/templateRoot", templates)
+        self.settings.setValue("SelectorTools/TemplateSelector/templateRoot", templates)
         try:
             with open(DEFAULTS, 'w') as paths:
                 paths.write('projects:{}\n'.format(projects))
@@ -79,7 +79,7 @@ class SettingsDialog(QDialog):
                                       '%s could not be opened for writing, please ensure you have permission to edit this file.' \
                                       % DEFAULTS )
         project_selector_enabled = self.ui.projectSelectorEnabledCheckBox.isChecked()
-        self.settings.setValue("MoorTools/ProjectSelector/isEnabled", project_selector_enabled)
+        self.settings.setValue("SelectorTools/ProjectSelector/isEnabled", project_selector_enabled)
         identifiable_only = self.ui.identifiableOnly.isChecked()
-        self.settings.setValue("MoorTools/ProjectSelector/identifiableOnly", identifiable_only)
+        self.settings.setValue("SelectorTools/ProjectSelector/identifiableOnly", identifiable_only)
         QDialog.accept(self)
