@@ -356,7 +356,7 @@ class TemplateSelectorDialog(QDialog):
             try:
                 scaleDenom = float(scaleCombo.currentText().replace(',', ''))
             except ValueError:
-                cleanedScaleString = scaleCombo.currentText().split(' (')[0]
+                cleanedScaleString = scaleCombo.currentText().replace(',', '').split(' (')[0]
                 cleanedScaleString = ''.join(cleanedScaleString.split())
                 scaleDenom = float(cleanedScaleString)
             # Set the scale
@@ -387,7 +387,10 @@ class TemplateSelectorDialog(QDialog):
                 dpi = 96
         print_layout.renderContext().setDpi(dpi)
 
-        self.iface.openLayoutDesigner(print_layout)
+        layout_designer_interface = self.iface.openLayoutDesigner(print_layout)
+        ldi_window = layout_designer_interface.window()
+        ldi_window.showMaximized()
+
         # All done
         self.accept()
 
