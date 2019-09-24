@@ -32,6 +32,7 @@ from qgis.PyQt.QtWidgets import (
     QSpacerItem,
     QComboBox,
     QLabel,
+    QPushButton,
     QSizePolicy,
     QMessageBox
 )
@@ -401,11 +402,12 @@ class TemplateSelectorDialog(QDialog):
         ldi_window = layout_designer_interface.window()
         ldi_window.showMaximized()
 
-        # Zoom to full extent
+        # Resizing page and zoom in
         ldi_parent = layout_designer_interface.parent()
+        resize_button = ldi_parent.findChild(QPushButton, 'mResizePageButton')
+        resize_button.click()
         zoom_action = ldi_parent.findChild(QAction, 'mActionZoomAll')
         zoom_action.trigger()
-
         # All done
         self.accept()
 
