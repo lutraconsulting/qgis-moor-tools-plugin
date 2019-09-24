@@ -401,9 +401,9 @@ class TemplateSelectorDialog(QDialog):
         ldi_window = layout_designer_interface.window()
         ldi_window.showMaximized()
 
-        # Zoom to 100%
+        # Zoom to full extent
         ldi_parent = layout_designer_interface.parent()
-        zoom_action = ldi_parent.findChild(QAction, 'mActionZoomActual')
+        zoom_action = ldi_parent.findChild(QAction, 'mActionZoomAll')
         zoom_action.trigger()
 
         # All done
