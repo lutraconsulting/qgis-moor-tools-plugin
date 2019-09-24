@@ -386,10 +386,16 @@ class TemplateSelectorDialog(QDialog):
             except (TypeError, ValueError):
                 dpi = 96
         print_layout.renderContext().setDpi(dpi)
-
         layout_designer_interface = self.iface.openLayoutDesigner(print_layout)
+
+        # Maximize layout window
         ldi_window = layout_designer_interface.window()
         ldi_window.showMaximized()
+
+        # Zoom to full layout extent
+        ldi_parent = layout_designer_interface.parent()
+        zoom_action = ldi_parent.findChild(QAction, 'mActionZoomAll')
+        zoom_action.trigger()
 
         # All done
         self.accept()
