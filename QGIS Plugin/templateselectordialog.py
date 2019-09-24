@@ -24,8 +24,17 @@ import os
 import traceback
 import locale
 from qgis.PyQt import QtGui, uic
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QSpacerItem, QComboBox, QLabel, QSizePolicy, QMessageBox
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QDialog,
+    QDialogButtonBox,
+    QSpacerItem,
+    QComboBox,
+    QLabel,
+    QSizePolicy,
+    QMessageBox
+)
 from qgis.core import (
     QgsPrintLayout,
     QgsMapLayer,
@@ -392,9 +401,9 @@ class TemplateSelectorDialog(QDialog):
         ldi_window = layout_designer_interface.window()
         ldi_window.showMaximized()
 
-        # Zoom to full layout extent
+        # Zoom to 100%
         ldi_parent = layout_designer_interface.parent()
-        zoom_action = ldi_parent.findChild(QAction, 'mActionZoomAll')
+        zoom_action = ldi_parent.findChild(QAction, 'mActionZoomActual')
         zoom_action.trigger()
 
         # All done
