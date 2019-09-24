@@ -24,8 +24,18 @@ import os
 import traceback
 import locale
 from qgis.PyQt import QtGui, uic
-from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QSpacerItem, QComboBox, QLabel, QSizePolicy, QMessageBox
 from qgis.PyQt.QtXml import QDomDocument
+from qgis.PyQt.QtWidgets import (
+    QAction,
+    QDialog,
+    QDialogButtonBox,
+    QSpacerItem,
+    QComboBox,
+    QLabel,
+    QPushButton,
+    QSizePolicy,
+    QMessageBox
+)
 from qgis.core import (
     QgsPrintLayout,
     QgsMapLayer,
@@ -386,11 +396,18 @@ class TemplateSelectorDialog(QDialog):
             except (TypeError, ValueError):
                 dpi = 96
         print_layout.renderContext().setDpi(dpi)
-
         layout_designer_interface = self.iface.openLayoutDesigner(print_layout)
+
+        # Maximize layout window
         ldi_window = layout_designer_interface.window()
         ldi_window.showMaximized()
 
+        # Resizing page and zoom in
+        ldi_parent = layout_designer_interface.parent()
+        resize_button = ldi_parent.findChild(QPushButton, 'mResizePageButton')
+        resize_button.click()
+        zoom_action = ldi_parent.findChild(QAction, 'mActionZoomAll')
+        zoom_action.trigger()
         # All done
         self.accept()
 
