@@ -95,7 +95,7 @@
    </layer>
   </symbol>
  </LayoutItem>
- <LayoutItem referencePoint="7" id="author" frame="false" marginY="1" visibility="1" itemRotation="0" background="true" outlineWidthM="0.3,mm" type="65641" zValue="9" size="105.484,8,mm" marginX="1" htmlState="0" positionOnPage="319.173,49.3655,mm" templateUuid="{8f66d0c3-a63a-47a8-b273-431d3a84f8a6}" groupUuid="" halign="1" excludeFromExports="0" position="319.173,49.3655,mm" positionLock="false" blendMode="0" frameJoinStyle="miter" opacity="1" uuid="{8f66d0c3-a63a-47a8-b273-431d3a84f8a6}" labelText="Compiled by [username] on [%concat(day($now ),'/',month($now),'/',year($now))%]" valign="32">
+ <LayoutItem referencePoint="7" id="author" frame="false" marginY="1" visibility="1" itemRotation="0" background="true" outlineWidthM="0.3,mm" type="65641" zValue="9" size="105.484,8,mm" marginX="1" htmlState="0" positionOnPage="319.173,49.3655,mm" templateUuid="{8f66d0c3-a63a-47a8-b273-431d3a84f8a6}" groupUuid="" halign="1" excludeFromExports="0" position="319.173,49.3655,mm" positionLock="false" blendMode="0" frameJoinStyle="miter" opacity="1" uuid="{8f66d0c3-a63a-47a8-b273-431d3a84f8a6}" labelText="[author]" valign="32">
   <FrameColor blue="0" green="0" alpha="255" red="0"/>
   <BackgroundColor blue="255" green="255" alpha="255" red="255"/>
   <LayoutObject>

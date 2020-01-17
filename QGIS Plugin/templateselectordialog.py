@@ -23,6 +23,7 @@
 import os
 import traceback
 import locale
+from sys import platform
 from qgis.PyQt import QtGui, uic
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtWidgets import (
@@ -44,6 +45,7 @@ from qgis.core import (
     QgsLayerTreeLayer,
     QgsLayoutItemLegend,
     QgsLayoutItemMap,
+    QgsLayoutItemLabel,
     QgsReadWriteContext,
     QgsFeature,
     QgsPointXY,
@@ -90,9 +92,13 @@ class TemplateSelectorDialog(QDialog):
 
         # Replacement map
         self.ui.suitableForComboBox.addItem('<custom>')
-        self.user = os.environ.get('username', '[user]')
+        if platform == 'win32':
+            self.username = os.environ.get('username', '<username>')
+        else:
+            self.username = os.environ.get('USER', '<username>')
         self.replaceMap = {
-            'author': "Compiled by {} on [%concat(day($now ),'/',month($now),'/',year($now))%]".format(self.user)
+            'username': self.username,
+            'author': f"Compiled by {self.username} on [%concat(day($now ),'/',month($now),'/',year($now))%]"
         }
         self.ui.autofit_btn.clicked.connect(self.autofit_map)
         self.ui.suitableForComboBox.currentIndexChanged.connect(self.specify_dpi)
@@ -253,7 +259,7 @@ class TemplateSelectorDialog(QDialog):
             locale.setlocale(locale.LC_ALL, '')
             currentMapCanvasScale = self.iface.mapCanvas().scale()
             scaleString = locale.format('%d', currentMapCanvasScale, grouping=True)
-            comboBox.addItem('%s (Current map canvas)' % scaleString)
+            comboBox.addItem(f'{scaleString} (Current map canvas)')
             for scale in self.presetScales:
                 comboBox.addItem(str(scale))
             self.ui.scalesGridLayout.addWidget(comboBox, i, 3)
@@ -329,7 +335,7 @@ class TemplateSelectorDialog(QDialog):
                                          self.ui.templateTypeComboBox.currentText(), 'Copyrights',
                                          self.ui.copyrightComboBox.currentText() + '.txt')
         try:
-            with open(copyrightFilePath, 'r') as copyrightFile:
+            with open(copyrightFilePath, 'r', errors='ignore') as copyrightFile:
                 copyrightText = copyrightFile.read().strip()
         except IOError:
             return ''
@@ -340,15 +346,15 @@ class TemplateSelectorDialog(QDialog):
         # Load replaceable text
         self.replaceMap['copyright'] = self.getCopyrightText()
         self.replaceMap['title'] = self.ui.titleLineEdit.text()
-        # not in examples, is it still supported?
         self.replaceMap['subtitle'] = self.ui.subtitleLineEdit.text()
-        self.replaceMap['gridref'] = self.getPoiText()
-
-        for k, v in self.replaceMap.items():
-            item = print_layout.itemById(k)
-            if item:
-                item.setText(v)
-
+        for item in self.get_text_items(print_layout):
+            item_text = item.currentText()
+            for k, v in self.replaceMap.items():
+                item_text = item_text.replace(f'[{k}]', v) if v else item_text
+                item.setText(item_text)
+        gridref_item = print_layout.itemById('gridref')
+        if gridref_item:
+            gridref_item.setText(self.getPoiText())
         # Update images of all maps elements in layout
         if self.identifiable_only:
             try:
@@ -419,13 +425,13 @@ class TemplateSelectorDialog(QDialog):
                 poiLayer = layer
                 break
         if poiLayer == None:
-            return 'Failed to find POI layer %s' % self.ui.poiLayerComboBox.currentText()
+            return 'Failed to find POI layer {}'.format(self.ui.poiLayerComboBox.currentText())
         poiString = 'Grid References\n\n'
         f = QgsFeature()
         fit = poiLayer.getFeatures()
         while fit.nextFeature(f):
             gridRef = xy_to_osgb(f.geometry().centroid().asPoint()[0], f.geometry().centroid().asPoint()[1], 10)
-            coordText = '%s\t%s\n' % (f.attribute(self.ui.poiFieldComboBox.currentText()), gridRef)
+            coordText = '{}\t{}\n'.format(f.attribute(self.ui.poiFieldComboBox.currentText()), gridRef)
             poiString += coordText
         return poiString
 
@@ -476,3 +482,15 @@ class TemplateSelectorDialog(QDialog):
             return
 
         return print_layout
+
+    @staticmethod
+    def get_text_items(print_layout):
+        print_layout_item_model = print_layout.itemsModel()
+        row_count = print_layout_item_model.rowCount()
+        column_count = print_layout_item_model.columnCount()
+        for r in range(row_count):
+            for c in range(column_count):
+                index = print_layout_item_model.index(r, c)
+                item = print_layout_item_model.itemFromIndex(index)
+                if isinstance(item, QgsLayoutItemLabel):
+                    yield item

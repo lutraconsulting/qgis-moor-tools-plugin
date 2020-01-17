@@ -93,7 +93,7 @@
    </layer>
   </symbol>
  </LayoutItem>
- <LayoutItem templateUuid="{1ccf4a9b-a394-46d8-8587-67688268fbc8}" excludeFromExports="0" opacity="1" frameJoinStyle="miter" zValue="11" marginY="1" type="65641" uuid="{1ccf4a9b-a394-46d8-8587-67688268fbc8}" frame="false" background="true" labelText="Compiled by martin on [%concat(day($now ),'/',month($now),'/',year($now))%]" htmlState="0" id="author" positionLock="false" position="196.739,36.7397,mm" visibility="1" blendMode="0" positionOnPage="196.739,36.7397,mm" itemRotation="0" groupUuid="" outlineWidthM="0.3,mm" size="72.1814,7,mm" valign="32" marginX="1" halign="1" referencePoint="7">
+ <LayoutItem templateUuid="{1ccf4a9b-a394-46d8-8587-67688268fbc8}" excludeFromExports="0" opacity="1" frameJoinStyle="miter" zValue="11" marginY="1" type="65641" uuid="{1ccf4a9b-a394-46d8-8587-67688268fbc8}" frame="false" background="true" labelText="[author]" htmlState="0" id="author" positionLock="false" position="196.739,36.7397,mm" visibility="1" blendMode="0" positionOnPage="196.739,36.7397,mm" itemRotation="0" groupUuid="" outlineWidthM="0.3,mm" size="72.1814,7,mm" valign="32" marginX="1" halign="1" referencePoint="7">
   <FrameColor red="0" green="0" blue="0" alpha="255"/>
   <BackgroundColor red="255" green="255" blue="255" alpha="255"/>
   <LayoutObject>
@@ -109,7 +109,7 @@
   <LabelFont description="Arial,10,-1,5,50,0,0,0,0,0" style=""/>
   <FontColor red="0" green="0" blue="0"/>
  </LayoutItem>
- <LayoutItem templateUuid="{c28f468d-8f9a-4d0a-8e22-6f00c0fd2dfe}" excludeFromExports="0" opacity="1" frameJoinStyle="miter" zValue="10" marginY="1" type="65641" uuid="{c28f468d-8f9a-4d0a-8e22-6f00c0fd2dfe}" frame="false" background="true" labelText="" htmlState="0" id="title" positionLock="false" position="51.2105,26.7476,mm" visibility="1" blendMode="0" positionOnPage="51.2105,26.7476,mm" itemRotation="0" groupUuid="" outlineWidthM="0.3,mm" size="78.4211,11.9842,mm" valign="32" marginX="1" halign="1" referencePoint="4">
+ <LayoutItem templateUuid="{c28f468d-8f9a-4d0a-8e22-6f00c0fd2dfe}" excludeFromExports="0" opacity="1" frameJoinStyle="miter" zValue="10" marginY="1" type="65641" uuid="{c28f468d-8f9a-4d0a-8e22-6f00c0fd2dfe}" frame="false" background="true" labelText="[title]" htmlState="0" id="title" positionLock="false" position="51.2105,26.7476,mm" visibility="1" blendMode="0" positionOnPage="51.2105,26.7476,mm" itemRotation="0" groupUuid="" outlineWidthM="0.3,mm" size="78.4211,11.9842,mm" valign="32" marginX="1" halign="1" referencePoint="4">
   <FrameColor red="0" green="0" blue="0" alpha="255"/>
   <BackgroundColor red="255" green="255" blue="255" alpha="255"/>
   <LayoutObject>
@@ -163,7 +163,7 @@
   <fillColor2 red="255" green="255" blue="255" alpha="255"/>
   <strokeColor red="0" green="0" blue="0" alpha="255"/>
  </LayoutItem>
- <LayoutItem templateUuid="{ece15dd0-d2ca-4308-9ee3-8a6195f3ab86}" excludeFromExports="0" opacity="1" frameJoinStyle="miter" zValue="5" marginY="1" type="65641" uuid="{ece15dd0-d2ca-4308-9ee3-8a6195f3ab86}" frame="true" background="true" labelText="Aerial 2010|Cities Revealed aerial photography copyright The GeoInformation Group 2010|0" htmlState="0" id="copyright" positionLock="false" position="12.3591,192.599,mm" visibility="1" blendMode="0" positionOnPage="12.3591,192.599,mm" itemRotation="0" groupUuid="" outlineWidthM="0.3,mm" size="118.993,6.58662,mm" valign="32" marginX="1" halign="1" referencePoint="0">
+ <LayoutItem templateUuid="{ece15dd0-d2ca-4308-9ee3-8a6195f3ab86}" excludeFromExports="0" opacity="1" frameJoinStyle="miter" zValue="5" marginY="1" type="65641" uuid="{ece15dd0-d2ca-4308-9ee3-8a6195f3ab86}" frame="true" background="true" labelText="[copyright]" htmlState="0" id="copyright" positionLock="false" position="12.3591,192.599,mm" visibility="1" blendMode="0" positionOnPage="12.3591,192.599,mm" itemRotation="0" groupUuid="" outlineWidthM="0.3,mm" size="118.993,6.58662,mm" valign="32" marginX="1" halign="1" referencePoint="0">
   <FrameColor red="0" green="0" blue="0" alpha="255"/>
   <BackgroundColor red="255" green="255" blue="255" alpha="255"/>
   <LayoutObject>
