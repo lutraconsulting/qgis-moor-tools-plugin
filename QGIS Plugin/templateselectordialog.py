@@ -313,7 +313,7 @@ class TemplateSelectorDialog(QDialog):
 
         defaultFilePath = os.path.join(copyrightFolder, 'default.txt')
         if os.path.isfile(defaultFilePath):
-            with open(defaultFilePath, 'r') as defaultFile:
+            with open(defaultFilePath, 'r', errors='ignore') as defaultFile:
                 defautlCopyright = defaultFile.read().strip()
                 if defautlCopyright.lower().endswith('.txt'):
                     defautlCopyright = defautlCopyright[:-4]
