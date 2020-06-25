@@ -342,7 +342,16 @@ class TemplateSelectorDialog(QDialog):
         return copyrightText
 
     def openTemplate(self):
-        print_layout = self.get_print_layout()
+        """ Open Layout Designer with the specified print layout template. """
+        project = QgsProject.instance()
+        layout_manager = project.layoutManager()
+        layout = self.get_print_layout()
+        layout_manager.addLayout(layout)
+        # reload the print layout from the manager, otherwise in some cases it might happen that
+        # the underlying C++ QgsPrintLayout object gets deleted
+        layout_title = self.ui.titleLineEdit.text()
+        print_layout = layout_manager.layoutByName(layout_title if layout_title else "unnamed")
+
         # Load replaceable text
         self.replaceMap['copyright'] = self.getCopyrightText()
         self.replaceMap['title'] = self.ui.titleLineEdit.text()
@@ -453,12 +462,11 @@ class TemplateSelectorDialog(QDialog):
         # Create a new print layout with name equal to the project title
         project = QgsProject.instance()
         layout_manager = project.layoutManager()
-        existing_print_layout = layout_manager.layoutByName(self.ui.titleLineEdit.text())
+        layout_title = self.ui.titleLineEdit.text()
+        existing_print_layout = layout_manager.layoutByName(layout_title) if layout_title else None
         if existing_print_layout:
             layout_manager.removeLayout(existing_print_layout)
         print_layout = QgsPrintLayout(project)
-        print_layout.setName(self.ui.titleLineEdit.text())
-        layout_manager.addLayout(print_layout)
 
         # Load the template file
         try:
@@ -481,6 +489,7 @@ class TemplateSelectorDialog(QDialog):
             QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
             return
 
+        print_layout.setName(layout_title if layout_title else "unnamed")
         return print_layout
 
     @staticmethod
