@@ -13,7 +13,7 @@ name=Project and Template Selector
 qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 description=Tool for selecting pre-defined QGIS projects.
-version=1.3.5
+version=1.3.6
 author=Dartmoor National Park Authority
 email=gi@dartmoor.gov.uk
 about=Tools for simplifying and automating common tasks for national parks and other protected areas.
@@ -23,7 +23,9 @@ about=Tools for simplifying and automating common tasks for national parks and o
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=1.3.5 - Bug fixes:
+changelog=1.3.6 - Bug fixes:
+ - Renamed plugin folder from QGIS Plugin to Project Selector
+ <p>1.3.5 - Bug fixes:
  - Fixed issue decoding non-ascii
  <p>1.3.4 - Bug fixes:
  - Fixed issue where template would be duplicated several times, breaking QGIS project
