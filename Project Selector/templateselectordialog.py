@@ -462,7 +462,8 @@ class TemplateSelectorDialog(QDialog):
         # Create a new print layout with name equal to the project title
         project = QgsProject.instance()
         layout_manager = project.layoutManager()
-        layout_title = self.ui.titleLineEdit.text()
+        user_layout_title = self.ui.titleLineEdit.text()
+        layout_title = user_layout_title if user_layout_title else "unnamed"
         existing_print_layout = layout_manager.layoutByName(layout_title) if layout_title else None
         if existing_print_layout:
             layout_manager.removeLayout(existing_print_layout)
@@ -489,7 +490,7 @@ class TemplateSelectorDialog(QDialog):
             QMessageBox.critical(self.iface.mainWindow(), 'Failed to Read Template', msg)
             return
 
-        print_layout.setName(layout_title if layout_title else "unnamed")
+        print_layout.setName(layout_title)
         return print_layout
 
     @staticmethod
