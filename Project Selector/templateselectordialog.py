@@ -388,8 +388,7 @@ class TemplateSelectorDialog(QDialog):
             try:
                 scaleDenom = float(denom_txt)
             except ValueError as e:
-                msg = f"{unicodedata.normalize('NFKD', repr(e))}"
-                QMessageBox.critical(self.iface.mainWindow(), 'Invalid scale', msg)
+                QMessageBox.critical(self.iface.mainWindow(), 'Invalid scale', repr(e))
                 return
             # Set the scale
             cme = layout_map.extent()
