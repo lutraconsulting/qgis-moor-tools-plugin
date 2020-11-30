@@ -23,6 +23,7 @@
 import os
 import traceback
 import locale
+import unicodedata
 from sys import platform
 from qgis.PyQt import QtGui, uic
 from qgis.PyQt.QtXml import QDomDocument
@@ -258,7 +259,7 @@ class TemplateSelectorDialog(QDialog):
             # Add current canvas scale
             locale.setlocale(locale.LC_ALL, '')
             currentMapCanvasScale = self.iface.mapCanvas().scale()
-            scaleString = locale.format('%d', currentMapCanvasScale, grouping=True)
+            scaleString = locale.format_string('%d', currentMapCanvasScale, grouping=True)
             comboBox.addItem(f'{scaleString} (Current map canvas)')
             for scale in self.presetScales:
                 comboBox.addItem(str(scale))
@@ -378,12 +379,18 @@ class TemplateSelectorDialog(QDialog):
             # Get the scale denominator (as a floating point)
             scaleCombo = self.ui.scalesGridLayout.itemAtPosition(idx, 3).widget()
             assert scaleCombo != 0
+            denom_txt = scaleCombo.currentText()
+            denom_txt = unicodedata.normalize('NFKD', denom_txt)
+            if " (" in denom_txt:
+                denom_txt = denom_txt.split(' (')[0]
+            denom_txt = denom_txt.replace(",", "")
+            denom_txt = "".join(denom_txt.split())
             try:
-                scaleDenom = float(scaleCombo.currentText().replace(',', ''))
-            except ValueError:
-                cleanedScaleString = scaleCombo.currentText().replace(',', '').split(' (')[0]
-                cleanedScaleString = ''.join(cleanedScaleString.split())
-                scaleDenom = float(cleanedScaleString)
+                scaleDenom = float(denom_txt)
+            except ValueError as e:
+                msg = f"{unicodedata.normalize('NFKD', repr(e))}"
+                QMessageBox.critical(self.iface.mainWindow(), 'Invalid scale', msg)
+                return
             # Set the scale
             cme = layout_map.extent()
             canvasEx = self.iface.mapCanvas().extent()
